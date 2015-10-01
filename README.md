@@ -1,2 +1,2 @@
-# guithub
-A guitar scale website
+# GuitHub
+A guitar scale website.
