@@ -17,11 +17,6 @@ fieldset {
 	border-radius: 5px;
 	background-color: #F9F9F9;
 }
-.heading {
-	margin: 0;
-	padding: 0;
-	text-align: center;
-}
 #form {
 	width: 25%;
   min-width: 320px;
@@ -61,10 +56,6 @@ a:visited {
 a:hover {
   color: #3460B9;
   text-decoration: underline;
-}
-#notes {
-  padding: 0;
-  margin: 0 auto;
 }
 #options {
   padding-top: 1em;
