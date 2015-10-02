@@ -3,25 +3,32 @@
 
 <head>
   <title>GuitHub</title>
+  <!-- Fonts used for header and body -->
   <link href='https://fonts.googleapis.com/css?family=Roboto:400,700' rel='stylesheet' type='text/css'>
   <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
-  <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+  <!-- Stylesheets -->
+  <link rel="stylesheet" type="text/css" href="normalize.css">
   <link rel="stylesheet" type="text/css" href="guithub.css">
 </head>
 
 <body>
   <div id="container">
+  <!-- Header, with Unicode character for guitar -->
     <div id="header">
-      <h1>&#127928;GuitHub</h1></div>
+      <h1>&#127928;GuitHub</h1>
+    </div>
+
     <div id="body">
       <div id="form">
-        <form id="options">
+        <form id="options" class="pure-form pure-form-aligned">
           <fieldset>
-
+            <label for="root">Root Note</label>
+            <select id="root"></select>
           </fieldset>
         </form>
       </div>
     </div>
+
     <div id="footer">
       <p>
         <a href="https://github.com/cnasc/guithub">Check Out GuitHub on GitHub!</a>
