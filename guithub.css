@@ -17,8 +17,8 @@ fieldset {
   border-radius: 5px;
   background-color: #F9F9F9;
 }
-#form {
-  width: 320px;
+.form {
+  width: 250px;
 }
 #container {
   min-height: 100%;
@@ -62,6 +62,6 @@ a:hover {
 button, select {
   font-family: inherit;
   font-size: 100%;
-  width: 200px;
+  width: 100%;
   box-sizing: border-box;
 }
