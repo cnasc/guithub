@@ -6,6 +6,10 @@ body {
   color: #262626;
   font-family: Open Sans, Helvetica, Arial;
 }
+#body {
+  padding: 10px;
+  padding-bottom: 4em;   /* Height of the footer */
+}
 h1 {
   margin: 0;
   padding: 0;
@@ -19,7 +23,8 @@ fieldset {
 }
 .form {
   width: 250px;
-  padding-bottom: 10px;
+  margin-left: auto;
+  margin-right: auto;
 }
 #container {
   min-height: 100%;
@@ -33,21 +38,12 @@ fieldset {
   border-width: 1px;
   border-color: #BEBEBE;
 }
-#body {
-  padding: 10px;
-  padding-bottom: 4em;   /* Height of the footer */
-}
 #footer {
   position: absolute;
   bottom: 0;
   width: 100%;
   height: 5em;   /* Height of the footer */
   text-align: center;
-}
-.svg {
-  width: 700px;
-  margin-left: auto;
-  margin-right: auto;
 }
 #fretboard {
   border-style: solid;
