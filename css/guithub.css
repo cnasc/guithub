@@ -6,6 +6,15 @@ body {
   color: #262626;
   font-family: Open Sans, Helvetica, Arial;
 }
+canvas {
+  padding: 0;
+  margin: auto;
+  display: block;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #BEBEBE;
+  border-radius: 5px;
+}
 #body {
   padding: 10px;
   padding-bottom: 4em;   /* Height of the footer */
