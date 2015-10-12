@@ -12,6 +12,9 @@ var black = 0x262626;
 // number of frets, 12 are easy to fit and really all that are necessary
 var numFrets = 12;
 
+// assume a six string guitar
+var numStrings = 6;
+
 // the chromatic scale (all 12 notes in Western music)
 var chromatic = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'];
 
@@ -62,7 +65,7 @@ function buildScale(root, type) {
 
 function drawFretboard(stage, renderer) {
   "use strict";
-  var board, string, fret, width, height, xPos, yPos, lineX, lineIncr;
+  var board, string, fret, width, height, xPos, yPos, lineX, lineY, lineIncr;
   
   // determine width and height of board
   // width will be 90% of the canvas
@@ -90,7 +93,7 @@ function drawFretboard(stage, renderer) {
   stage.addChild(board);
   
   // now to draw the frets (1-based because the value of i only matters insofar as it is less than numFrets)
-  lineIncr = Math.floor(width / 12);
+  lineIncr = Math.floor(width / numFrets);
   lineX = xPos + lineIncr;
   for (var i = 1; i < numFrets; i++) {
     fret = new PIXI.Graphics();
@@ -102,6 +105,20 @@ function drawFretboard(stage, renderer) {
     stage.addChild(fret);
     
     lineX += lineIncr;
+  }
+  
+  // now to draw the strings (1-based because the value of i only matters insofar as it is less than numStrings)
+  lineIncr = Math.floor(height / (numStrings - 1));
+  lineY = yPos + lineIncr;
+  for (var i = 1; i < numStrings - 1; i++) {
+    string = new PIXI.Graphics();
+    string.lineStyle(1, black, 1);
+    
+    string.moveTo(xPos, lineY);
+    string.lineTo(xPos + width, lineY);
+    stage.addChild(string);
+    
+    lineY += lineIncr;
   }
 }
 
