@@ -37,33 +37,43 @@ var fretboard = {
   numStrings: 6,
   width: Math.floor(renderer.width * 0.9),
   height: Math.floor(renderer.height * 0.6),
-  xPos: Math.floor((renderer.width - this.width) / 2),
-  yPos: Math.floor((renderer.height - this.height) / 3),
+  
+  xPos: function () {
+    "use strict";
+    return Math.floor((renderer.width - fretboard.width) / 2);
+  },
+  
+  yPos: function () {
+    "use strict";
+    return Math.floor((renderer.height - fretboard.height) / 3);
+  },
   
   drawBackground: function () {
+    "use strict";
     // instantiate board
     var board = new PIXI.Graphics();
     board.lineStyle(2, this.black, 1);
     board.beginFill(this.fretboardColor);
     
     // draw the board
-    board.drawRect(this.xPos, this.yPos, this.width, this.height);
+    board.drawRect(this.xPos(), this.yPos(), this.width, this.height);
     board.endFill();
     stage.addChild(board);
   },
   
   drawFrets: function () {
+    "use strict";
     var lineIncr, lineX, i, fret;
     // determine position and offset for frets
     lineIncr = Math.floor(this.width / this.numFrets);
-    lineX = this.xPos + lineIncr;
+    lineX = this.xPos() + lineIncr;
     
     for (i = 0; i < this.numFrets - 1; i++) {
       fret = new PIXI.Graphics();
       fret.lineStyle(2, this.black, 1);
       
-      fret.moveTo(lineX, this.yPos);
-      fret.lineTo(lineX, this.yPos + this.height);
+      fret.moveTo(lineX, this.yPos());
+      fret.lineTo(lineX, this.yPos() + this.height);
       stage.addChild(fret);
       
       lineX += lineIncr;
@@ -71,17 +81,18 @@ var fretboard = {
   },
   
   drawStrings: function () {
+    "use strict";
     var lineIncr, lineY, i, string;
     // determine position and offset for strings
     lineIncr = Math.floor(this.height / (this.numStrings - 1));
-    lineY = this.yPos + lineIncr;
+    lineY = this.yPos() + lineIncr;
     
     for (i = 0; i < this.numStrings - 2; i++) {
       string = new PIXI.Graphics();
       string.lineStyle(1, this.black, 1);
       
-      string.moveTo(this.xPos, lineY);
-      string.lineTo(this.xPos + this.width, lineY);
+      string.moveTo(this.xPos(), lineY);
+      string.lineTo(this.xPos() + this.width, lineY);
       stage.addChild(string);
       
       lineY += lineIncr;
@@ -89,6 +100,7 @@ var fretboard = {
   },
   
   drawBoard: function () {
+    "use strict";
     this.drawBackground();
     this.drawFrets();
     this.drawStrings();
