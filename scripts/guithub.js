@@ -3,17 +3,18 @@
 
 /*global PIXI */
 
-// Maple-ish color for fretboard
-var fretboardColor = 0xffefdb;
+// Create the renderer
+var renderer = PIXI.autoDetectRenderer(1000, 300,
+  {antialiasing: true, transparent: false, resolution: 1});
 
-// "black" value for outlines
-var black = 0x262626;
+// Change the background color to a lovely gray
+renderer.backgroundColor = 0xF9F9F9;
 
-// number of frets, 12 are easy to fit and really all that are necessary
-var numFrets = 12;
+// Add the canvas to the HTML document
+document.getElementById("canvas").appendChild(renderer.view);
 
-// assume a six string guitar
-var numStrings = 6;
+// Create a container object called the `stage`
+var stage = new PIXI.Container();
 
 // the chromatic scale (all 12 notes in Western music)
 var chromatic = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'];
@@ -26,6 +27,72 @@ var scales = {
   minor:      [2, 1, 2, 2, 1, 2, 2],
   dorian:     [2, 1, 2, 2, 2, 1, 2],
   mixolydian: [2, 2, 1, 2, 2, 1, 2]
+};
+
+// Contains specifications for fretboard and functions that draw it
+var fretboard = {
+  fretboardColor: 0xffefdb,
+  black: 0x262626,
+  numFrets: 12,
+  numStrings: 6,
+  width: Math.floor(renderer.width * 0.9),
+  height: Math.floor(renderer.height * 0.6),
+  xPos: Math.floor((renderer.width - this.width) / 2),
+  yPos: Math.floor((renderer.height - this.height) / 3),
+  
+  drawBackground: function () {
+    // instantiate board
+    var board = new PIXI.Graphics();
+    board.lineStyle(2, this.black, 1);
+    board.beginFill(this.fretboardColor);
+    
+    // draw the board
+    board.drawRect(this.xPos, this.yPos, this.width, this.height);
+    board.endFill();
+    stage.addChild(board);
+  },
+  
+  drawFrets: function () {
+    var lineIncr, lineX, i, fret;
+    // determine position and offset for frets
+    lineIncr = Math.floor(this.width / this.numFrets);
+    lineX = this.xPos + lineIncr;
+    
+    for (i = 0; i < this.numFrets - 1; i++) {
+      fret = new PIXI.Graphics();
+      fret.lineStyle(2, this.black, 1);
+      
+      fret.moveTo(lineX, this.yPos);
+      fret.lineTo(lineX, this.yPos + this.height);
+      stage.addChild(fret);
+      
+      lineX += lineIncr;
+    }
+  },
+  
+  drawStrings: function () {
+    var lineIncr, lineY, i, string;
+    // determine position and offset for strings
+    lineIncr = Math.floor(this.height / (this.numStrings - 1));
+    lineY = this.yPos + lineIncr;
+    
+    for (i = 0; i < this.numStrings - 2; i++) {
+      string = new PIXI.Graphics();
+      string.lineStyle(1, this.black, 1);
+      
+      string.moveTo(this.xPos, lineY);
+      string.lineTo(this.xPos + this.width, lineY);
+      stage.addChild(string);
+      
+      lineY += lineIncr;
+    }
+  },
+  
+  drawBoard: function () {
+    this.drawBackground();
+    this.drawFrets();
+    this.drawStrings();
+  }
 };
 
 // returns an array of notes in the scale, or 
@@ -63,80 +130,8 @@ function buildScale(root, type) {
   return scale;
 }
 
-function drawFretboard(stage, renderer) {
-  "use strict";
-  var board, string, fret, width, height, xPos, yPos, lineX, lineY, lineIncr;
-  
-  // determine width and height of board
-  // width will be 90% of the canvas
-  width = Math.floor(renderer.width * 0.9);
-  // height will be 60% of the canvas
-  height = Math.floor(renderer.height * 0.6);
-  
-  // board will be horizontally centered...
-  xPos = Math.floor((renderer.width - width) / 2);
-  // ... and vertically positioned in the top 2/3 of the canvas
-  yPos = Math.floor((renderer.height - height) / 3);
-  
-  // instantiate the board
-  board = new PIXI.Graphics();
-  
-  // set an opaque 2 pixel border and fill rect with nice color
-  board.lineStyle(2, black, 1);
-  board.beginFill(fretboardColor);
-  
-  // actually draw the rectangle
-  board.drawRect(xPos, yPos, width, height);
-  
-  // finish drawing the rectangle and add the drawing to the canvas
-  board.endFill();
-  stage.addChild(board);
-  
-  // now to draw the frets (1-based because the value of i only matters insofar as it is less than numFrets)
-  lineIncr = Math.floor(width / numFrets);
-  lineX = xPos + lineIncr;
-  for (var i = 1; i < numFrets; i++) {
-    fret = new PIXI.Graphics();
-    fret.lineStyle(2, black, 1);
-    
-    // move the line to the appropriate coordinates (use yPos and height because they don't change)
-    fret.moveTo(lineX, yPos);
-    fret.lineTo(lineX, yPos + height);
-    stage.addChild(fret);
-    
-    lineX += lineIncr;
-  }
-  
-  // now to draw the strings (1-based because the value of i only matters insofar as it is less than numStrings)
-  lineIncr = Math.floor(height / (numStrings - 1));
-  lineY = yPos + lineIncr;
-  for (var i = 1; i < numStrings - 1; i++) {
-    string = new PIXI.Graphics();
-    string.lineStyle(1, black, 1);
-    
-    string.moveTo(xPos, lineY);
-    string.lineTo(xPos + width, lineY);
-    stage.addChild(string);
-    
-    lineY += lineIncr;
-  }
-}
-
-// Create the renderer
-var renderer = PIXI.autoDetectRenderer(1000, 300,
-  {antialiasing: true, transparent: false, resolution: 1});
-
-// Change the background color to a lovely gray
-renderer.backgroundColor = 0xF9F9F9;
-
-// Add the canvas to the HTML document
-document.getElementById("canvas").appendChild(renderer.view);
-
-// Create a container object called the `stage`
-var stage = new PIXI.Container();
-
 // draw the fretboard
-drawFretboard(stage, renderer);
+fretboard.drawBoard();
 
 // Tell the `renderer` to `render` the `stage`
 renderer.render(stage);
