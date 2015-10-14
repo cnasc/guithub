@@ -39,6 +39,16 @@ var fretboard = {
   width: Math.floor(renderer.width * 0.9),
   height: Math.floor(renderer.height * 0.6),
 
+  fretDistance: function () {
+    var distance = this.width / this.numFrets;
+    return Math.floor(distance);
+  },
+
+  stringDistance: function() {
+    var distance = this.height / (this.numStrings - 1);
+    return Math.floor(distance);
+  },
+
   xPos: function () {
     "use strict";
     return Math.floor((renderer.width - fretboard.width) / 2);
@@ -64,10 +74,10 @@ var fretboard = {
 
   drawFrets: function () {
     "use strict";
-    var lineIncr, lineX, i, fret;
-    // determine position and offset for frets
-    lineIncr = Math.floor(this.width / this.numFrets);
-    lineX = this.xPos() + lineIncr;
+    var lineX, i, fret;
+
+    // determine position for first fret
+    lineX = this.xPos() + this.fretDistance();
 
     for (i = 0; i < this.numFrets - 1; i++) {
       fret = new PIXI.Graphics();
@@ -77,16 +87,16 @@ var fretboard = {
       fret.lineTo(lineX, this.yPos() + this.height);
       stage.addChild(fret);
 
-      lineX += lineIncr;
+      lineX += this.fretDistance();
     }
   },
 
   drawStrings: function () {
     "use strict";
-    var lineIncr, lineY, i, string;
-    // determine position and offset for strings
-    lineIncr = Math.floor(this.height / (this.numStrings - 1));
-    lineY = this.yPos() + lineIncr;
+    var lineY, i, string;
+
+    // determine position for first string
+    lineY = this.yPos() + this.stringDistance();
 
     for (i = 0; i < this.numStrings - 2; i++) {
       string = new PIXI.Graphics();
@@ -96,7 +106,7 @@ var fretboard = {
       string.lineTo(this.xPos() + this.width, lineY);
       stage.addChild(string);
 
-      lineY += lineIncr;
+      lineY += this.stringDistance();
     }
   },
 
@@ -106,6 +116,11 @@ var fretboard = {
     this.drawFrets();
     this.drawStrings();
   }
+};
+
+// contains the logic needed to place notes
+var strings = {
+
 };
 
 // returns an array of notes in the scale, or
@@ -142,6 +157,8 @@ function buildScale(root, type) {
 
   return scale;
 }
+
+console.log(buildScale("A", "minor"));
 
 // draw the fretboard
 fretboard.drawBoard();
