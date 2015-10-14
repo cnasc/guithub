@@ -153,7 +153,10 @@ function buildScale(root, type) {
   return scale;
 }
 
-console.log(buildScale("A", "minor"));
+var submitButton = document.getElementById('submit');
+submitButton.onclick = function () {
+  console.log(buildScale("A", "minor"));
+};
 
 // draw the fretboard
 fretboard.drawBoard();
