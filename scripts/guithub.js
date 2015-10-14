@@ -61,15 +61,26 @@ var fretboard = {
 
   drawBackground: function () {
     "use strict";
-    // instantiate board
     var board = new PIXI.Graphics();
-    board.lineStyle(2, this.black, 1);
-    board.beginFill(this.fretboardColor);
 
     // draw the board
+    board.lineStyle(2, this.black, 1);
+    board.beginFill(this.fretboardColor);
     board.drawRect(this.xPos(), this.yPos(), this.width, this.height);
     board.endFill();
     stage.addChild(board);
+  },
+
+  drawNut: function() {
+    var  nut = new PIXI.Graphics();
+
+    // draw the nut
+    nut.lineStyle(2, this.black, 1);
+    nut.beginFill(0xFFFFFF);
+    nut.drawRect(this.xPos(), this.yPos(),
+      this.fretDistance(), this.height);
+    nut.endFill();
+    stage.addChild(nut);
   },
 
   drawFrets: function () {
@@ -113,6 +124,7 @@ var fretboard = {
   drawBoard: function () {
     "use strict";
     this.drawBackground();
+    this.drawNut();
     this.drawFrets();
     this.drawStrings();
   }
@@ -153,13 +165,16 @@ function buildScale(root, type) {
   return scale;
 }
 
-var submitButton = document.getElementById('submit');
-submitButton.onclick = function () {
-  console.log(buildScale("A", "minor"));
-};
-
 // draw the fretboard
 fretboard.drawBoard();
 
 // Tell the `renderer` to `render` the `stage`
 renderer.render(stage);
+
+// Handles the click of the submit button
+var submitButton = document.getElementById('submit');
+submitButton.onclick = function () {
+  var root = document.getElementById('root').value;
+  var tonality = document.getElementById('tonality').value;
+  console.log(buildScale(root, tonality));
+};
