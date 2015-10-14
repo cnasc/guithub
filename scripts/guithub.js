@@ -118,11 +118,6 @@ var fretboard = {
   }
 };
 
-// contains the logic needed to place notes
-var strings = {
-
-};
-
 // returns an array of notes in the scale, or
 function buildScale(root, type) {
   "use strict";
