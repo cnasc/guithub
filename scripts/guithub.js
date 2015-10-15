@@ -217,8 +217,6 @@ var notes = {
       note.beginFill(color);
       note.lineStyle(2, fretboard.black, 1);
       note.drawCircle(fretPos + (fretboard.fretDistance() * positions[i]), yPos, 18);
-      console.log(this.scale);
-      console.log(positions);
       note.endFill();
       stage.addChild(note);
     }
