@@ -131,7 +131,7 @@ var fretboard = {
   }
 };
 
-// returns an array of notes in the scale, or
+// returns an array of notes in the scale, or null if tampered with
 function buildScale(root, type) {
   "use strict";
   var scale, formula, note;
@@ -176,7 +176,6 @@ function buildScale(root, type) {
 // Contains logic regarding the drawing of notes
 var notes = {
   // ROYGBIV colors for notes
-  scale: [],
   colors: [0xFF0000,
             0xFF7F00,
             0xFFFF00,
@@ -185,6 +184,7 @@ var notes = {
             0x4B0082,
             0x8B00FF
   ],
+  note: new PIXI.Graphics(),
   strings: ['E', 'B', 'G', 'D', 'A', 'E'],
   findPositions: function (scale, string) {
     "use strict";
@@ -214,20 +214,21 @@ var notes = {
 
     for (i = 0; i < positions.length; i++) {
       color = this.colors[i];
-      note = new PIXI.Graphics();
-      note.beginFill(color);
-      note.lineStyle(2, fretboard.black, 1);
-      note.drawRect(fretPos +
+      this.note.beginFill(color);
+      this.note.lineStyle(2, fretboard.black, 1);
+      this.note.drawRect(fretPos +
         (fretboard.fretDistance() * positions[i]), yPos, size, size);
-      note.pivot.x = size / 2;
-      note.pivot.y = size / 2;
-      note.endFill();
-      stage.addChild(note);
+      this.note.pivot.x = size / 2;
+      this.note.pivot.y = size / 2;
+      this.note.endFill();
     }
   },
   init: function (root, tonality) {
     this.scale = buildScale(root, tonality);
-    this.drawNotes("E", 0);
+    for (var i = 0; i < fretboard.numStrings; i++){
+      this.drawNotes(this.strings[i], i);
+    }
+    stage.addChild(this.note);
   }
 };
 
@@ -242,7 +243,6 @@ var submitButton = document.getElementById('submit');
 submitButton.onclick = function () {
   var root = document.getElementById('root').value;
   var tonality = document.getElementById('tonality').value;
-  var scale = buildScale(root, tonality);
   notes.init(root, tonality);
   renderer.render(stage);
 };
