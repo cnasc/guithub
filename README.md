@@ -6,6 +6,9 @@ You pick a root note and a tonality, and it draws the scale on the fretboard.
 
 It uses the colors of the rainbow (ROYGBIV) to indicate scale tones, so if you know your colors then you know which fret is which degree of a given scale.
 
+### Current Known Issues
+So far the canvas is not cleared in between drawing requests. As a result, some markers linger and make the output garbled and useless. This will be fixed ASAP.
+
 ### TODO
 - [ ] Better clarity
   - [ ] Colorblind friendly display options
