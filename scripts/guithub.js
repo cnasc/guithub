@@ -24,18 +24,18 @@ var chromatic = ['A', 'A#', 'B', 'C', 'C#', 'D',
 // Source: http://www.bandnotes.info/tidbits/scales/half-whl.htm
 // Sticking with diatonic scales for the time being.
 var scales = {
-  major:      [2, 2, 1, 2, 2, 2, 1],
-  minor:      [2, 1, 2, 2, 1, 2, 2],
-  dorian:     [2, 1, 2, 2, 2, 1, 2],
-  mixolydian: [2, 2, 1, 2, 2, 1, 2]
+  major:      [2, 2, 1, 2, 2, 2],
+  minor:      [2, 1, 2, 2, 1, 2],
+  dorian:     [2, 1, 2, 2, 2, 1],
+  mixolydian: [2, 2, 1, 2, 2, 1]
 };
 
 // Contains specifications for fretboard and functions that draw it
 var fretboard = {
   fretboardColor: 0xffefdb,
   black: 0x262626,
-  // "13" frets, incluidng nut
-  numFrets: 13,
+  // "12" frets, incluidng nut (so no 12th fret)
+  numFrets: 12,
   numStrings: 6,
   width: Math.floor(renderer.width * 0.9),
   height: Math.floor(renderer.height * 0.6),
@@ -175,8 +175,8 @@ function buildScale(root, type) {
 
 // Contains logic regarding the drawing of notes
 var notes = {
-  scale: "major",
   // ROYGBIV colors for notes
+  scale: [],
   colors: [0xFF0000,
             0xFF7F00,
             0xFFFF00,
@@ -187,6 +187,7 @@ var notes = {
   ],
   strings: ['E', 'B', 'G', 'D', 'A', 'E'],
   findPositions: function (scale, string) {
+    "use strict";
     var positions, i, fretNum, stringVal;
     positions = [];
     stringVal = chromatic.indexOf(string);
@@ -203,19 +204,28 @@ var notes = {
 
     return positions;
   },
-  drawNotes: function() {
-    var stringPos, fretPos, positions, note, i, color;
-    stringPos = fretboard.yPos();
+  drawNotes: function(string, location) {
+    "use strict";
+    var positions, color, yPos, i, fretPos, note;
+    positions = this.findPositions(this.scale, string);
+    yPos = fretboard.yPos() + (location * fretboard.stringDistance());
     fretPos = fretboard.xPos() + (fretboard.fretDistance() / 2);
 
-    for (string = 0; string < strings.length; string++) {
-      stringPos = stringPos + (string * fretboard.stringDistance());
-      positions = this.findPositions(this.scale, strings[string]);
-      for (i = 0; i < positions.length; i++) {
-        note = new PIXI.Graphics();
-        color
-      }
+    for (i = 0; i < positions.length; i++) {
+      color = this.colors[i];
+      note = new PIXI.Graphics();
+      note.beginFill(color);
+      note.lineStyle(2, fretboard.black, 1);
+      note.drawCircle(fretPos + (fretboard.fretDistance() * positions[i]), yPos, 18);
+      console.log(this.scale);
+      console.log(positions);
+      note.endFill();
+      stage.addChild(note);
     }
+  },
+  init: function (root, tonality) {
+    this.scale = buildScale(root, tonality);
+    this.drawNotes("E", 0);
   }
 };
 
@@ -233,4 +243,6 @@ submitButton.onclick = function () {
   var scale = buildScale(root, tonality);
   console.log(scale);
   console.log(notes.findPositions(scale, 'E'));
+  notes.init(root, tonality);
+  renderer.render(stage);
 };
