@@ -206,17 +206,21 @@ var notes = {
   },
   drawNotes: function(string, location) {
     "use strict";
-    var positions, color, yPos, i, fretPos, note;
+    var positions, color, yPos, i, fretPos, note, size;
     positions = this.findPositions(this.scale, string);
     yPos = fretboard.yPos() + (location * fretboard.stringDistance());
     fretPos = fretboard.xPos() + (fretboard.fretDistance() / 2);
+    size = renderer.height / 10;
 
     for (i = 0; i < positions.length; i++) {
       color = this.colors[i];
       note = new PIXI.Graphics();
       note.beginFill(color);
       note.lineStyle(2, fretboard.black, 1);
-      note.drawCircle(fretPos + (fretboard.fretDistance() * positions[i]), yPos, 18);
+      note.drawRect(fretPos +
+        (fretboard.fretDistance() * positions[i]), yPos, size, size);
+      note.pivot.x = size / 2;
+      note.pivot.y = size / 2;
       note.endFill();
       stage.addChild(note);
     }
@@ -239,8 +243,6 @@ submitButton.onclick = function () {
   var root = document.getElementById('root').value;
   var tonality = document.getElementById('tonality').value;
   var scale = buildScale(root, tonality);
-  console.log(scale);
-  console.log(notes.findPositions(scale, 'E'));
   notes.init(root, tonality);
   renderer.render(stage);
 };
