@@ -175,6 +175,7 @@ function buildScale(root, type) {
 
 // Contains logic regarding the drawing of notes
 var notes = {
+  scale: "major",
   // ROYGBIV colors for notes
   colors: [0xFF0000,
             0xFF7F00,
@@ -186,16 +187,36 @@ var notes = {
   ],
   strings: ['E', 'B', 'G', 'D', 'A', 'E'],
   findPositions: function (scale, string) {
-    var positions, i, fretNum;
+    var positions, i, fretNum, stringVal;
     positions = [];
+    stringVal = chromatic.indexOf(string);
 
     for (i = 0; i < scale.length; i++) {
-      fretNum = (scale[i] + chromatic.indexOf(string)) % 12;
+      if (scale[i] < stringVal) {
+        fretNum = scale[i] + chromatic.length - stringVal;
+      }
+      else {
+        fretNum = scale[i] - stringVal;
+      }
       positions.push(fretNum);
     }
 
     return positions;
   },
+  drawNotes: function() {
+    var stringPos, fretPos, positions, note, i, color;
+    stringPos = fretboard.yPos();
+    fretPos = fretboard.xPos() + (fretboard.fretDistance() / 2);
+
+    for (string = 0; string < strings.length; string++) {
+      stringPos = stringPos + (string * fretboard.stringDistance());
+      positions = this.findPositions(this.scale, strings[string]);
+      for (i = 0; i < positions.length; i++) {
+        note = new PIXI.Graphics();
+        color
+      }
+    }
+  }
 };
 
 // draw the fretboard
