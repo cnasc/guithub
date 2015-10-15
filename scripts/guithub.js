@@ -34,7 +34,8 @@ var scales = {
 var fretboard = {
   fretboardColor: 0xffefdb,
   black: 0x262626,
-  numFrets: 12,
+  // "13" frets, incluidng nut
+  numFrets: 13,
   numStrings: 6,
   width: Math.floor(renderer.width * 0.9),
   height: Math.floor(renderer.height * 0.6),
@@ -154,8 +155,15 @@ function buildScale(root, type) {
   }
 
   scale = [];
+
+  // Checking for error, should only happen if HTML is tampered with
   note = chromatic.indexOf(root);
-  scale.push(note);
+  if (note < 0) {
+    return null;
+  }
+  else {
+    scale.push(note);
+  }
 
   for (var i = 0; i < formula.length; i++) {
     note = (note + formula[i]) % chromatic.length;
@@ -164,6 +172,31 @@ function buildScale(root, type) {
 
   return scale;
 }
+
+// Contains logic regarding the drawing of notes
+var notes = {
+  // ROYGBIV colors for notes
+  colors: [0xFF0000,
+            0xFF7F00,
+            0xFFFF00,
+            0x00FF00,
+            0x0000FF,
+            0x4B0082,
+            0x8B00FF
+  ],
+  strings: ['E', 'B', 'G', 'D', 'A', 'E'],
+  findPositions: function (scale, string) {
+    var positions, i, fretNum;
+    positions = [];
+
+    for (i = 0; i < scale.length; i++) {
+      fretNum = (scale[i] + chromatic.indexOf(string)) % 12;
+      positions.push(fretNum);
+    }
+
+    return positions;
+  },
+};
 
 // draw the fretboard
 fretboard.drawBoard();
@@ -176,5 +209,7 @@ var submitButton = document.getElementById('submit');
 submitButton.onclick = function () {
   var root = document.getElementById('root').value;
   var tonality = document.getElementById('tonality').value;
-  console.log(buildScale(root, tonality));
+  var scale = buildScale(root, tonality);
+  console.log(scale);
+  console.log(notes.findPositions(scale, 'E'));
 };
