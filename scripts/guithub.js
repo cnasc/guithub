@@ -38,7 +38,7 @@ var fretboard = {
   numFrets: 12,
   numStrings: 6,
   width: Math.floor(renderer.width * 0.9),
-  height: Math.floor(renderer.height * 0.6),
+  height: Math.floor(renderer.height * 0.7),
 
   fretDistance: function () {
     var distance = this.width / this.numFrets;
