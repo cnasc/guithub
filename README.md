@@ -15,6 +15,6 @@ So far the canvas is not cleared in between drawing requests. As a result, some 
   - [ ] Clear all note graphics on submit
 - [ ] Better clarity
   - [ ] Colorblind friendly display options
-  - [ ] Thicker line to differentiate the nut
+  - [x] Thicker line to differentiate the nut
   - [ ] Note names inside markers
 - [ ] Chord tone highlighting
