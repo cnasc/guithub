@@ -39,13 +39,16 @@ var fretboard = {
   numStrings: 6,
   width: Math.floor(renderer.width * 0.9),
   height: Math.floor(renderer.height * 0.7),
+  board: new PIXI.Graphics(),
 
   fretDistance: function () {
+    "use strict";
     var distance = this.width / this.numFrets;
     return Math.floor(distance);
   },
 
   stringDistance: function() {
+    "use strict";
     var distance = this.height / (this.numStrings - 1);
     return Math.floor(distance);
   },
@@ -62,42 +65,41 @@ var fretboard = {
 
   drawBackground: function () {
     "use strict";
-    var board = new PIXI.Graphics();
-
     // draw the board
-    board.lineStyle(2, this.black, 1);
-    board.beginFill(this.fretboardColor);
-    board.drawRect(this.xPos(), this.yPos(), this.width, this.height);
-    board.endFill();
-    stage.addChild(board);
+    this.board.lineStyle(2, this.black, 1);
+    this.board.beginFill(this.fretboardColor);
+    this.board.drawRect(this.xPos(), this.yPos(), this.width, this.height);
+    this.board.endFill();
   },
 
   drawNut: function() {
-    var  nut = new PIXI.Graphics();
-
+    "use strict";
     // draw the nut
-    nut.lineStyle(2, this.black, 1);
-    nut.beginFill(0xFFFFFF);
-    nut.drawRect(this.xPos(), this.yPos(),
+    this.board.lineStyle(2, this.black, 1);
+    this.board.beginFill(0xFFFFFF);
+    this.board.drawRect(this.xPos(), this.yPos(),
       this.fretDistance(), this.height);
-    nut.endFill();
-    stage.addChild(nut);
+    this.board.endFill();
   },
 
   drawFrets: function () {
     "use strict";
-    var lineX, i, fret;
+    var lineX, i;
 
     // determine position for first fret
     lineX = this.xPos() + this.fretDistance();
 
     for (i = 0; i < this.numFrets - 1; i++) {
-      fret = new PIXI.Graphics();
-      fret.lineStyle(2, this.black, 1);
+      if (i < 1) {
+        // draw a thick line for the first "fret" to indicate nut
+        this.board.lineStyle(10, this.black, 1);
+      }
+      else {
+        this.board.lineStyle(2, this.black, 1);
+      }
 
-      fret.moveTo(lineX, this.yPos());
-      fret.lineTo(lineX, this.yPos() + this.height);
-      stage.addChild(fret);
+      this.board.moveTo(lineX, this.yPos());
+      this.board.lineTo(lineX, this.yPos() + this.height);
 
       lineX += this.fretDistance();
     }
@@ -105,29 +107,28 @@ var fretboard = {
 
   drawStrings: function () {
     "use strict";
-    var lineY, i, string;
+    var lineY, i;
 
     // determine position for first string
     lineY = this.yPos() + this.stringDistance();
 
     for (i = 0; i < this.numStrings - 2; i++) {
-      string = new PIXI.Graphics();
-      string.lineStyle(1, this.black, 1);
+      this.board.lineStyle(1, this.black, 1);
 
-      string.moveTo(this.xPos(), lineY);
-      string.lineTo(this.xPos() + this.width, lineY);
-      stage.addChild(string);
+      this.board.moveTo(this.xPos(), lineY);
+      this.board.lineTo(this.xPos() + this.width, lineY);
 
       lineY += this.stringDistance();
     }
   },
 
-  drawBoard: function () {
+  init: function () {
     "use strict";
     this.drawBackground();
     this.drawNut();
     this.drawFrets();
     this.drawStrings();
+    stage.addChild(this.board);
   }
 };
 
@@ -233,7 +234,7 @@ var notes = {
 };
 
 // draw the fretboard
-fretboard.drawBoard();
+fretboard.init();
 
 // Tell the `renderer` to `render` the `stage`
 renderer.render(stage);
