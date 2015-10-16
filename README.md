@@ -10,6 +10,9 @@ It uses the colors of the rainbow (ROYGBIV) to indicate scale tones, so if you k
 So far the canvas is not cleared in between drawing requests. As a result, some markers linger and make the output garbled and useless. This will be fixed ASAP.
 
 ### TODO
+- [ ] Fix output
+  - [ ] Encapsulate each note in a graphics object
+  - [ ] Clear all note graphics on submit
 - [ ] Better clarity
   - [ ] Colorblind friendly display options
   - [ ] Thicker line to differentiate the nut
