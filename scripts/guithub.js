@@ -163,12 +163,12 @@ function buildScale(root, type) {
     return null;
   }
   else {
-    scale.push(note);
+    scale.push(chromatic[note]);
   }
 
   for (var i = 0; i < formula.length; i++) {
     note = (note + formula[i]) % chromatic.length;
-    scale.push(note);
+    scale.push(chromatic[note]);
   }
 
   return scale;
@@ -186,22 +186,32 @@ var notes = {
             0x8B00FF
   ],
   graphics: {
-    root: new PIXI.DisplayObjectContainer(),
-    second: new PIXI.DisplayObjectContainer(),
-    third: new PIXI.DisplayObjectContainer(),
-    fourth: new PIXI.DisplayObjectContainer(),
-    fifth: new PIXI.DisplayObjectContainer(),
-    sixth: new PIXI.DisplayObjectContainer(),
-    seventh: new PIXI.DisplayObjectContainer()
+    root: new PIXI.Container(),
+    second: new PIXI.Container(),
+    third: new PIXI.Container(),
+    fourth: new PIXI.Container(),
+    fifth: new PIXI.Container(),
+    sixth: new PIXI.Container(),
+    seventh: new PIXI.Container()
   },
   strings: ['E', 'B', 'G', 'D', 'A', 'E'],
   wipe: function () {
+    "use strict";
     // clear the contents of all container objects
     for (var container in this.graphics) {
       container.clear();
     }
   },
+  getPosition: function (note, string) {
+    "use strict";
+    // find location for given note on given string
+    var stringVal, noteVal, fretNum;
+    stringVal = chromatic.indexOf(string);
+    noteVal = chromatic.indexOf(note);
+
+  },
   populate: function (container, note) {
+    "use strict";
     // draw all instances of a given note into a given container
   }
 };
