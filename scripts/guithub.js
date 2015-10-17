@@ -243,16 +243,31 @@ var notes = {
       container.addChild(text);
     }
   },
-  init: function (root) {
+  init: function () {
     "use strict";
+    // Add all the containers to the main stage
+    for (var container in this.graphics) {
+      if (this.graphics.hasOwnProperty(container)) {
+        var obj = this.graphics[container];
+        stage.addChild(obj);
+      }
+    }
+  },
+  update: function (root, tonality) {
+    "use strict";
+    var scale, container, i;
+
+    scale = buildScale(root, tonality);
     this.wipe();
+
+
     this.populate(this.graphics.root, root, this.colors[0]);
-    stage.addChild(this.graphics.root);
   }
 };
 
-// draw the fretboard
+// draw the fretboard, prepare note containers
 fretboard.init();
+notes.init();
 
 // Tell the `renderer` to `render` the `stage`
 renderer.render(stage);
@@ -262,6 +277,6 @@ var submitButton = document.getElementById('submit');
 submitButton.onclick = function () {
   var root = document.getElementById('root').value;
   var tonality = document.getElementById('tonality').value;
-  notes.init(root);
+  notes.update(root, tonality);
   renderer.render(stage);
 };
