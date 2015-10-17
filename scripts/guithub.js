@@ -256,12 +256,34 @@ var notes = {
   update: function (root, tonality) {
     "use strict";
     var scale, container, i;
-
     scale = buildScale(root, tonality);
     this.wipe();
 
+    for (i = 0; i < scale.length; i++) {
+      if (i === 0) {
+        container = this.graphics.root;
+      }
+      else if (i === 1) {
+        container = this.graphics.second;
+      }
+      else if (i === 2) {
+        container = this.graphics.third;
+      }
+      else if (i === 3) {
+        container = this.graphics.fourth;
+      }
+      else if (i === 4) {
+        container = this.graphics.fifth;
+      }
+      else if (i === 5) {
+        container = this.graphics.sixth;
+      }
+      else {
+        container = this.graphics.seventh;
+      }
 
-    this.populate(this.graphics.root, root, this.colors[0]);
+      this.populate(container, scale[i], this.colors[i]);
+    }
   }
 };
 
