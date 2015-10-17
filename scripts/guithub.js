@@ -206,9 +206,18 @@ var notes = {
     "use strict";
     // find location for given note on given string
     var stringVal, noteVal, fretNum;
+
     stringVal = chromatic.indexOf(string);
     noteVal = chromatic.indexOf(note);
 
+    if (noteVal < stringVal) {
+      fretNum = noteVal + chromatic.length - stringVal;
+    }
+    else {
+      fretNum = noteVal - stringVal;
+    }
+
+    return fretNum;
   },
   populate: function (container, note) {
     "use strict";
