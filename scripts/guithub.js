@@ -199,7 +199,10 @@ var notes = {
     "use strict";
     // clear the contents of all container objects
     for (var container in this.graphics) {
-      container.clear();
+      if (this.graphics.hasOwnProperty(container)) {
+        var obj = this.graphics[container];
+        obj.removeChildren();
+      }
     }
   },
   getPosition: function (note, string) {
@@ -227,10 +230,10 @@ var notes = {
       fretNum = this.getPosition(note, this.strings[i]);
       yPos = fretboard.yPos() + (i * fretboard.stringDistance());
       xPos = (fretboard.xPos() + (fretboard.fretDistance() / 2)) + (fretNum * fretboard.fretDistance());
-      text = new PIXI.Text(note, {font: "36px sans-serif",
+      text = new PIXI.Text(note, {font: "36px Roboto",
                                       fill: color,
                                       stroke: fretboard.black,
-                                      strokeThickness: 6
+                                      strokeThickness: 4
       });
       text.anchor.x = 0.5;
       text.anchor.y = 0.5;
@@ -238,8 +241,9 @@ var notes = {
       container.addChild(text);
     }
   },
-  init: function () {
-    this.populate(this.graphics.root, 'A#', this.colors[0]);
+  init: function (root) {
+    this.wipe();
+    this.populate(this.graphics.root, root, this.colors[0]);
     stage.addChild(this.graphics.root);
   }
 };
@@ -255,6 +259,6 @@ var submitButton = document.getElementById('submit');
 submitButton.onclick = function () {
   var root = document.getElementById('root').value;
   var tonality = document.getElementById('tonality').value;
-  notes.init();
+  notes.init(root);
   renderer.render(stage);
 };
