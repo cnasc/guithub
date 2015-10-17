@@ -232,10 +232,10 @@ var notes = {
       xPos = (fretboard.xPos() + (fretboard.fretDistance() / 2)) +
         (fretNum * fretboard.fretDistance());
 
-      text = new PIXI.Text(note, {font: "34px Helvetica",
+      text = new PIXI.Text(note, {font: "36px Georgia",
                                       fill: color,
-                                      stroke: "black",
-                                      strokeThickness: 4
+                                      stroke: fretboard.black,
+                                      strokeThickness: 6
       });
       text.anchor.x = 0.5;
       text.anchor.y = 0.5;

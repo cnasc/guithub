@@ -16,6 +16,7 @@ I currently have not hosted this anywhere, but if you clone the repo and open in
 - [ ] Better clarity
   - [ ] Colorblind friendly display options
   - [ ] Improve text rendering
+  - [ ] Better support for high PPI displays
   - [x] Thicker line to differentiate the nut
   - [x] Note names as markers
 - [ ] Chord tone highlighting
