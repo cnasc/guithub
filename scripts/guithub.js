@@ -229,10 +229,12 @@ var notes = {
     for (i = 0; i < this.strings.length; i++) {
       fretNum = this.getPosition(note, this.strings[i]);
       yPos = fretboard.yPos() + (i * fretboard.stringDistance());
-      xPos = (fretboard.xPos() + (fretboard.fretDistance() / 2)) + (fretNum * fretboard.fretDistance());
-      text = new PIXI.Text(note, {font: "36px Roboto",
+      xPos = (fretboard.xPos() + (fretboard.fretDistance() / 2)) +
+        (fretNum * fretboard.fretDistance());
+
+      text = new PIXI.Text(note, {font: "34px Helvetica",
                                       fill: color,
-                                      stroke: fretboard.black,
+                                      stroke: "black",
                                       strokeThickness: 4
       });
       text.anchor.x = 0.5;
@@ -242,6 +244,7 @@ var notes = {
     }
   },
   init: function (root) {
+    "use strict";
     this.wipe();
     this.populate(this.graphics.root, root, this.colors[0]);
     stage.addChild(this.graphics.root);
