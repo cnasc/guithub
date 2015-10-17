@@ -10,11 +10,13 @@ It uses the colors of the rainbow (ROYGBIV) to indicate scale tones, so if you k
 I currently have not hosted this anywhere, but if you clone the repo and open index.html with your favorite browser you can see the current state of the project.
 
 ### TODO
-- [ ] Fix output
-  - [ ] Encapsulate each note in a graphics object
-  - [ ] Clear all note graphics on submit
+- [x] Fix output
+  - [x] Encapsulate each note in a text object
+  - [x] Clear all note graphics on submit
 - [ ] Better clarity
   - [ ] Colorblind friendly display options
+  - [ ] Improve text rendering
+  - [ ] Better support for high PPI displays
   - [x] Thicker line to differentiate the nut
-  - [ ] Note names inside markers
+  - [x] Note names as markers
 - [ ] Chord tone highlighting

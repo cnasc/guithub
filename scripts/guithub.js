@@ -163,12 +163,12 @@ function buildScale(root, type) {
     return null;
   }
   else {
-    scale.push(note);
+    scale.push(chromatic[note]);
   }
 
   for (var i = 0; i < formula.length; i++) {
     note = (note + formula[i]) % chromatic.length;
-    scale.push(note);
+    scale.push(chromatic[note]);
   }
 
   return scale;
@@ -185,56 +185,111 @@ var notes = {
             0x4B0082,
             0x8B00FF
   ],
-  note: new PIXI.Graphics(),
+  graphics: {
+    root: new PIXI.Container(),
+    second: new PIXI.Container(),
+    third: new PIXI.Container(),
+    fourth: new PIXI.Container(),
+    fifth: new PIXI.Container(),
+    sixth: new PIXI.Container(),
+    seventh: new PIXI.Container()
+  },
   strings: ['E', 'B', 'G', 'D', 'A', 'E'],
-  findPositions: function (scale, string) {
+  wipe: function () {
     "use strict";
-    var positions, i, fretNum, stringVal;
-    positions = [];
+    // clear the contents of all container objects
+    for (var container in this.graphics) {
+      if (this.graphics.hasOwnProperty(container)) {
+        var obj = this.graphics[container];
+        obj.removeChildren();
+      }
+    }
+  },
+  getPosition: function (note, string) {
+    "use strict";
+    // find location for given note on given string
+    var stringVal, noteVal, fretNum;
+
     stringVal = chromatic.indexOf(string);
+    noteVal = chromatic.indexOf(note);
+
+    if (noteVal < stringVal) {
+      fretNum = noteVal + chromatic.length - stringVal;
+    }
+    else {
+      fretNum = noteVal - stringVal;
+    }
+
+    return fretNum;
+  },
+  populate: function (container, note, color) {
+    "use strict";
+    // draw all instances of a given note into a given container
+    var fretNum, i, text, xPos, yPos;
+    for (i = 0; i < this.strings.length; i++) {
+      fretNum = this.getPosition(note, this.strings[i]);
+      yPos = fretboard.yPos() + (i * fretboard.stringDistance());
+      xPos = (fretboard.xPos() + (fretboard.fretDistance() / 2)) +
+        (fretNum * fretboard.fretDistance());
+
+      text = new PIXI.Text(note, {font: "36px Georgia",
+                                      fill: color,
+                                      stroke: fretboard.black,
+                                      strokeThickness: 6
+      });
+      text.anchor.x = 0.5;
+      text.anchor.y = 0.5;
+      text.position.set(xPos, yPos);
+      container.addChild(text);
+    }
+  },
+  init: function () {
+    "use strict";
+    // Add all the containers to the main stage
+    for (var container in this.graphics) {
+      if (this.graphics.hasOwnProperty(container)) {
+        var obj = this.graphics[container];
+        stage.addChild(obj);
+      }
+    }
+  },
+  update: function (root, tonality) {
+    "use strict";
+    var scale, container, i;
+    scale = buildScale(root, tonality);
+    this.wipe();
 
     for (i = 0; i < scale.length; i++) {
-      if (scale[i] < stringVal) {
-        fretNum = scale[i] + chromatic.length - stringVal;
+      if (i === 0) {
+        container = this.graphics.root;
+      }
+      else if (i === 1) {
+        container = this.graphics.second;
+      }
+      else if (i === 2) {
+        container = this.graphics.third;
+      }
+      else if (i === 3) {
+        container = this.graphics.fourth;
+      }
+      else if (i === 4) {
+        container = this.graphics.fifth;
+      }
+      else if (i === 5) {
+        container = this.graphics.sixth;
       }
       else {
-        fretNum = scale[i] - stringVal;
+        container = this.graphics.seventh;
       }
-      positions.push(fretNum);
-    }
 
-    return positions;
-  },
-  drawNotes: function(string, location) {
-    "use strict";
-    var positions, color, yPos, i, fretPos, note, size;
-    positions = this.findPositions(this.scale, string);
-    yPos = fretboard.yPos() + (location * fretboard.stringDistance());
-    fretPos = fretboard.xPos() + (fretboard.fretDistance() / 2);
-    size = renderer.height / 10;
-
-    for (i = 0; i < positions.length; i++) {
-      color = this.colors[i];
-      this.note.beginFill(color);
-      this.note.lineStyle(2, fretboard.black, 1);
-      this.note.drawRect(fretPos +
-        (fretboard.fretDistance() * positions[i]), yPos, size, size);
-      this.note.pivot.x = size / 2;
-      this.note.pivot.y = size / 2;
-      this.note.endFill();
+      this.populate(container, scale[i], this.colors[i]);
     }
-  },
-  init: function (root, tonality) {
-    this.scale = buildScale(root, tonality);
-    for (var i = 0; i < fretboard.numStrings; i++){
-      this.drawNotes(this.strings[i], i);
-    }
-    stage.addChild(this.note);
   }
 };
 
-// draw the fretboard
+// draw the fretboard, prepare note containers
 fretboard.init();
+notes.init();
 
 // Tell the `renderer` to `render` the `stage`
 renderer.render(stage);
@@ -244,6 +299,6 @@ var submitButton = document.getElementById('submit');
 submitButton.onclick = function () {
   var root = document.getElementById('root').value;
   var tonality = document.getElementById('tonality').value;
-  notes.init(root, tonality);
+  notes.update(root, tonality);
   renderer.render(stage);
 };
