@@ -185,51 +185,24 @@ var notes = {
             0x4B0082,
             0x8B00FF
   ],
-  note: new PIXI.Graphics(),
+  graphics: {
+    root: new PIXI.DisplayObjectContainer(),
+    second: new PIXI.DisplayObjectContainer(),
+    third: new PIXI.DisplayObjectContainer(),
+    fourth: new PIXI.DisplayObjectContainer(),
+    fifth: new PIXI.DisplayObjectContainer(),
+    sixth: new PIXI.DisplayObjectContainer(),
+    seventh: new PIXI.DisplayObjectContainer()
+  },
   strings: ['E', 'B', 'G', 'D', 'A', 'E'],
-  findPositions: function (scale, string) {
-    "use strict";
-    var positions, i, fretNum, stringVal;
-    positions = [];
-    stringVal = chromatic.indexOf(string);
-
-    for (i = 0; i < scale.length; i++) {
-      if (scale[i] < stringVal) {
-        fretNum = scale[i] + chromatic.length - stringVal;
-      }
-      else {
-        fretNum = scale[i] - stringVal;
-      }
-      positions.push(fretNum);
-    }
-
-    return positions;
-  },
-  drawNotes: function(string, location) {
-    "use strict";
-    var positions, color, yPos, i, fretPos, note, size;
-    positions = this.findPositions(this.scale, string);
-    yPos = fretboard.yPos() + (location * fretboard.stringDistance());
-    fretPos = fretboard.xPos() + (fretboard.fretDistance() / 2);
-    size = renderer.height / 10;
-
-    for (i = 0; i < positions.length; i++) {
-      color = this.colors[i];
-      this.note.beginFill(color);
-      this.note.lineStyle(2, fretboard.black, 1);
-      this.note.drawRect(fretPos +
-        (fretboard.fretDistance() * positions[i]), yPos, size, size);
-      this.note.pivot.x = size / 2;
-      this.note.pivot.y = size / 2;
-      this.note.endFill();
+  wipe: function () {
+    // clear the contents of all container objects
+    for (var container in this.graphics) {
+      container.clear();
     }
   },
-  init: function (root, tonality) {
-    this.scale = buildScale(root, tonality);
-    for (var i = 0; i < fretboard.numStrings; i++){
-      this.drawNotes(this.strings[i], i);
-    }
-    stage.addChild(this.note);
+  populate: function (container, note) {
+    // draw all instances of a given note into a given container
   }
 };
 
