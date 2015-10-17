@@ -219,9 +219,28 @@ var notes = {
 
     return fretNum;
   },
-  populate: function (container, note) {
+  populate: function (container, note, color) {
     "use strict";
     // draw all instances of a given note into a given container
+    var fretNum, i, text, xPos, yPos;
+    for (i = 0; i < this.strings.length; i++) {
+      fretNum = this.getPosition(note, this.strings[i]);
+      yPos = fretboard.yPos() + (i * fretboard.stringDistance());
+      xPos = (fretboard.xPos() + (fretboard.fretDistance() / 2)) + (fretNum * fretboard.fretDistance());
+      text = new PIXI.Text(note, {font: "36px sans-serif",
+                                      fill: color,
+                                      stroke: fretboard.black,
+                                      strokeThickness: 6
+      });
+      text.anchor.x = 0.5;
+      text.anchor.y = 0.5;
+      text.position.set(xPos, yPos);
+      container.addChild(text);
+    }
+  },
+  init: function () {
+    this.populate(this.graphics.root, 'A#', this.colors[0]);
+    stage.addChild(this.graphics.root);
   }
 };
 
@@ -236,6 +255,6 @@ var submitButton = document.getElementById('submit');
 submitButton.onclick = function () {
   var root = document.getElementById('root').value;
   var tonality = document.getElementById('tonality').value;
-  notes.init(root, tonality);
+  notes.init();
   renderer.render(stage);
 };
