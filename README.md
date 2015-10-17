@@ -1,5 +1,5 @@
 # GuitHub
-A guitar scale helper website. It's a work in progress, and a bit messy at the moment.
+A guitar scale helper website as my final project for CS50 through EdX. It's a work in progress, and a bit messy at the moment.
 
 ### How does it work?
 You pick a root note and a tonality, and it draws the scale on the fretboard.
