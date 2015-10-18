@@ -21,3 +21,4 @@ I currently have not hosted this anywhere, but if you clone the repo and open in
   - [x] Note names as markers
 - [x] Position markers for easy glances
 - [ ] Chord tone highlighting
+  - [ ] Base layer of markers to show where notes outside chord are
