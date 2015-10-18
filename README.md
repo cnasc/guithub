@@ -19,4 +19,5 @@ I currently have not hosted this anywhere, but if you clone the repo and open in
   - [ ] Better support for high PPI displays
   - [x] Thicker line to differentiate the nut
   - [x] Note names as markers
+- [ ] Position markers for easy glances
 - [ ] Chord tone highlighting
