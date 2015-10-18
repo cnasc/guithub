@@ -122,12 +122,37 @@ var fretboard = {
     }
   },
 
+  drawMarkers: function () {
+    "use strict";
+    // draw position markers at frets 3, 5, 7, 9
+    var offset, radius, xPos, yPos, locations, i, marker;
+    offset = 30;
+    radius = 10;
+    locations = [3, 5, 7, 9];
+    yPos = this.yPos() + this.height + offset;
+
+    for (i = 0; i < locations.length; i++) {
+      marker = new PIXI.Text(locations[i],
+        {font: "20px Georgia", fill: this.black});
+
+      xPos = (this.xPos() + (this.fretDistance() / 2)) +
+        (this.fretDistance() * locations[i]);
+
+      marker.anchor.x = 0.5;
+      marker.anchor.y = 0.5;
+      marker.position.set(xPos, yPos);
+      stage.addChild(marker);
+    }
+
+  },
+
   init: function () {
     "use strict";
     this.drawBackground();
     this.drawNut();
     this.drawFrets();
     this.drawStrings();
+    this.drawMarkers();
     stage.addChild(this.board);
   }
 };
