@@ -219,6 +219,15 @@ var notes = {
     sixth: new PIXI.Container(),
     seventh: new PIXI.Container()
   },
+  base: {
+    root: new PIXI.Container(),
+    second: new PIXI.Container(),
+    third: new PIXI.Container(),
+    fourth: new PIXI.Container(),
+    fifth: new PIXI.Container(),
+    sixth: new PIXI.Container(),
+    seventh: new PIXI.Container()
+  },
   strings: ['E', 'B', 'G', 'D', 'A', 'E'],
   wipe: function () {
     "use strict";
@@ -226,6 +235,12 @@ var notes = {
     for (var container in this.graphics) {
       if (this.graphics.hasOwnProperty(container)) {
         var obj = this.graphics[container];
+        obj.removeChildren();
+      }
+    }
+    for (var container in this.base) {
+      if (this.base.hasOwnProperty(container)) {
+        var obj = this.base[container];
         obj.removeChildren();
       }
     }
@@ -268,6 +283,29 @@ var notes = {
       container.addChild(text);
     }
   },
+  baseLayer: function (container, note) {
+    "use strict";
+    // draw small markers to indicate notes when main layers not active
+    var fretNum, i, marker, xPos, yPos, width, height;
+
+    marker = new PIXI.Graphics();
+    width = 14;
+    height = width;
+
+    for (i = 0; i < this.strings.length; i++) {
+      fretNum = this.getPosition(note, this.strings[i]);
+      yPos = fretboard.yPos() + (i * fretboard.stringDistance());
+      xPos = (fretboard.xPos() + (fretboard.fretDistance() / 2)) +
+        (fretNum * fretboard.fretDistance());
+      marker.beginFill(fretboard.black);
+      marker.drawRect(xPos, yPos, width, height);
+      marker.endFill();
+    }
+
+    marker.pivot.x = 7;
+    marker.pivot.y = 7;
+    container.addChild(marker);
+  },
   init: function () {
     "use strict";
     // Add all the containers to the main stage
@@ -277,37 +315,52 @@ var notes = {
         stage.addChild(obj);
       }
     }
+    for (var container in this.base) {
+      if (this.base.hasOwnProperty(container)) {
+        var obj = this.base[container];
+        obj.visible = false;
+        stage.addChild(obj);
+      }
+    }
   },
   update: function (root, tonality) {
     "use strict";
-    var scale, container, i;
+    var scale, container, baseContainer, i;
     scale = buildScale(root, tonality);
     this.wipe();
 
     for (i = 0; i < scale.length; i++) {
       if (i === 0) {
         container = this.graphics.root;
+        baseContainer = this.base.root;
       }
       else if (i === 1) {
         container = this.graphics.second;
+        baseContainer = this.base.second;
       }
       else if (i === 2) {
         container = this.graphics.third;
+        baseContainer = this.base.third;
       }
       else if (i === 3) {
         container = this.graphics.fourth;
+        baseContainer = this.base.fourth;
       }
       else if (i === 4) {
         container = this.graphics.fifth;
+        baseContainer = this.base.fifth;
       }
       else if (i === 5) {
         container = this.graphics.sixth;
+        baseContainer = this.base.sixth;
       }
       else {
         container = this.graphics.seventh;
+        baseContainer = this.base.seventh;
       }
 
       this.populate(container, scale[i], this.colors[i]);
+      this.baseLayer(baseContainer, scale[i]);
     }
   }
 };
