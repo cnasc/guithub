@@ -20,4 +20,5 @@ I currently have not hosted this anywhere, but if you clone the repo and open in
   - [x] Thicker line to differentiate the nut
   - [x] Note names as markers
 - [ ] Position markers for easy glances
+  - [ ] Triangles at top and bottom to indicate 3, 5, 7, 9
 - [ ] Chord tone highlighting
