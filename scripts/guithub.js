@@ -355,39 +355,21 @@ var notes = {
   },
   update: function (root, tonality) {
     "use strict";
-    var scale, container, baseContainer, i;
+    var scale, container, baseContainer, i, degrees;
     scale = buildScale(root, tonality);
+    degrees = ['root',
+                'second',
+                'third',
+                'fourth',
+                'fifth',
+                'sixth',
+                'seventh'
+    ];
     this.wipe();
 
     for (i = 0; i < scale.length; i++) {
-      if (i === 0) {
-        container = this.graphics.root;
-        baseContainer = this.base.root;
-      }
-      else if (i === 1) {
-        container = this.graphics.second;
-        baseContainer = this.base.second;
-      }
-      else if (i === 2) {
-        container = this.graphics.third;
-        baseContainer = this.base.third;
-      }
-      else if (i === 3) {
-        container = this.graphics.fourth;
-        baseContainer = this.base.fourth;
-      }
-      else if (i === 4) {
-        container = this.graphics.fifth;
-        baseContainer = this.base.fifth;
-      }
-      else if (i === 5) {
-        container = this.graphics.sixth;
-        baseContainer = this.base.sixth;
-      }
-      else {
-        container = this.graphics.seventh;
-        baseContainer = this.base.seventh;
-      }
+      container = this.graphics[degrees[i]];
+      baseContainer = this.base[degrees[i]];
 
       this.populate(container, scale[i], this.colors[i]);
       this.baseLayer(baseContainer, scale[i]);
