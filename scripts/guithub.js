@@ -374,6 +374,23 @@ var notes = {
       this.populate(container, scale[i], this.colors[i]);
       this.baseLayer(baseContainer, scale[i]);
     }
+
+    // make base markers all invisible each time we update
+    for (var container in this.base) {
+      if (this.base.hasOwnProperty(container)) {
+        var obj = this.base[container];
+        obj.visible = false;
+      }
+    }
+
+    // make main markers all visible each time we update
+    for (var container in this.graphics) {
+      if (this.graphics.hasOwnProperty(container)) {
+        var obj = this.graphics[container];
+        obj.visible = true;
+        stage.addChild(obj);
+      }
+    }
   }
 };
 
