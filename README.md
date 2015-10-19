@@ -20,6 +20,6 @@ I currently have not hosted this anywhere, but if you clone the repo and open in
   - [x] Thicker line to differentiate the nut
   - [x] Note names as markers
 - [x] Position markers for easy glances
-- [ ] Chord tone highlighting
+- [x] Chord tone highlighting
   - [x] Base layer of markers to show where notes outside chord are
-  - [ ] Toggle highlighting with number keys (1-7 for chords, 0 for full)
+  - [x] Toggle highlighting with number keys (1-7 for chords, 0 for full)
