@@ -68,7 +68,8 @@ var fretboard = {
     // draw the board
     this.board.lineStyle(2, this.black, 1);
     this.board.beginFill(this.fretboardColor);
-    this.board.drawRect(this.xPos(), this.yPos(), this.width, this.height);
+    this.board.drawRect(this.xPos(), this.yPos(),
+      this.width, this.height);
     this.board.endFill();
   },
 
@@ -306,6 +307,35 @@ var notes = {
     marker.pivot.y = 7;
     container.addChild(marker);
   },
+  highlight: function (e) {
+    // Highlights chords according to which key was pressed
+    var degrees, key, keyValue, visible, invisible;
+    degrees = ['root',
+                 'second',
+                 'third',
+                 'fourth',
+                 'fifth',
+                 'sixth',
+                 'seventh'
+    ];
+    visible = [];
+    invisible = [];
+    key = e.keyCode || e.charCode;
+    // check if the key pressed was between 0 and 7, otherwise return
+    if (key >= 48 && key <=55) {
+      keyValue = key - 48;
+    }
+    else {
+      return;
+    }
+
+    if (keyValue == 0) {
+      for (var i = 0; i < degrees.length; i++) {
+        visible.push(degrees[i]);
+      }
+    }
+
+  },
   init: function () {
     "use strict";
     // Add all the containers to the main stage
@@ -371,6 +401,9 @@ notes.init();
 
 // Tell the `renderer` to `render` the `stage`
 renderer.render(stage);
+
+// Add event listener for chord highlighting
+window.addEventListener('keypress', notes.highlight, false);
 
 // Handles the click of the submit button
 var submitButton = document.getElementById('submit');
