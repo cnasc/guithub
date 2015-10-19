@@ -309,7 +309,7 @@ var notes = {
   },
   highlight: function (e) {
     // Highlights chords according to which key was pressed
-    var degrees, key, keyValue, visible, invisible, i;
+    var degrees, key, keyValue, visible, i, j, layer;
     degrees = ['root',
                  'second',
                  'third',
@@ -319,7 +319,6 @@ var notes = {
                  'seventh'
     ];
     visible = [];
-    invisible = [];
     key = e.keyCode || e.charCode;
     // check if the key pressed was between 0 and 7, otherwise return
     if (key >= 48 && key <=55) {
@@ -344,6 +343,22 @@ var notes = {
       visible.push(degrees[first], degrees[third], degrees[fifth]);
     }
 
+    // now loop over degrees and set visible property as needed
+    // for some reason this function only works with "notes" instead
+    // of "this" (because of event handler scope?)
+    for (j = 0; j < degrees.length; j++) {
+      layer = degrees[j];
+      if (visible.indexOf(layer) > -1) {
+        notes.graphics[layer].visible = true;
+        notes.base[layer].visible = false;
+      }
+      else {
+        notes.graphics[layer].visible = false;
+        notes.base[layer].visible = true;
+      }
+    }
+    // render changes
+    renderer.render(stage);
   },
   init: function () {
     "use strict";
