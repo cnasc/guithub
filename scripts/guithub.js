@@ -309,7 +309,7 @@ var notes = {
   },
   highlight: function (e) {
     // Highlights chords according to which key was pressed
-    var degrees, key, keyValue, visible, invisible;
+    var degrees, key, keyValue, visible, invisible, i;
     degrees = ['root',
                  'second',
                  'third',
@@ -330,9 +330,18 @@ var notes = {
     }
 
     if (keyValue == 0) {
-      for (var i = 0; i < degrees.length; i++) {
+      for (i = 0; i < degrees.length; i++) {
         visible.push(degrees[i]);
       }
+    }
+    else {
+      // push the first, third, and fifth degrees relative to keypress
+      var first, third, fifth;
+      keyValue -= 1;
+      first = keyValue;
+      third = (keyValue + 2) % degrees.length;
+      fifth = (keyValue + 4) % degrees.length;
+      visible.push(degrees[first], degrees[third], degrees[fifth]);
     }
 
   },
