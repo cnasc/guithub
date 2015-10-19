@@ -19,7 +19,7 @@
 
 // Create the renderer
 var renderer = PIXI.autoDetectRenderer(1000, 300,
-  {antialiasing: true, transparent: false, resolution: 1});
+  {antialiasing: true, transparent: false, resolution: 1}, true);
 
 // Change the background color to a lovely gray
 renderer.backgroundColor = 0xF9F9F9;
