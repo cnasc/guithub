@@ -2,7 +2,7 @@
 A guitar scale helper website as my final project for CS50 through EdX. It's a work in progress, and a bit messy at the moment.
 
 ### How does it work?
-You pick a root note and a tonality, and it draws the scale on the fretboard.
+You pick a root note and a tonality, and it draws the scale on the fretboard. Use number keys 1 through 7 to toggle chord highlighting (think Nashville numbering, 1 = root and so on), or 0 to show all the notes in the scale.
 
 It uses the colors of the rainbow (ROYGBIV) to indicate scale tones, so if you know your colors then you know which fret is which degree of a given scale.
 
