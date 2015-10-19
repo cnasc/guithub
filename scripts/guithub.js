@@ -68,7 +68,8 @@ var fretboard = {
     // draw the board
     this.board.lineStyle(2, this.black, 1);
     this.board.beginFill(this.fretboardColor);
-    this.board.drawRect(this.xPos(), this.yPos(), this.width, this.height);
+    this.board.drawRect(this.xPos(), this.yPos(),
+      this.width, this.height);
     this.board.endFill();
   },
 
@@ -219,6 +220,15 @@ var notes = {
     sixth: new PIXI.Container(),
     seventh: new PIXI.Container()
   },
+  base: {
+    root: new PIXI.Container(),
+    second: new PIXI.Container(),
+    third: new PIXI.Container(),
+    fourth: new PIXI.Container(),
+    fifth: new PIXI.Container(),
+    sixth: new PIXI.Container(),
+    seventh: new PIXI.Container()
+  },
   strings: ['E', 'B', 'G', 'D', 'A', 'E'],
   wipe: function () {
     "use strict";
@@ -226,6 +236,12 @@ var notes = {
     for (var container in this.graphics) {
       if (this.graphics.hasOwnProperty(container)) {
         var obj = this.graphics[container];
+        obj.removeChildren();
+      }
+    }
+    for (var container in this.base) {
+      if (this.base.hasOwnProperty(container)) {
+        var obj = this.base[container];
         obj.removeChildren();
       }
     }
@@ -268,6 +284,82 @@ var notes = {
       container.addChild(text);
     }
   },
+  baseLayer: function (container, note) {
+    "use strict";
+    // draw small markers to indicate notes when main layers not active
+    var fretNum, i, marker, xPos, yPos, width, height;
+
+    marker = new PIXI.Graphics();
+    width = 14;
+    height = width;
+
+    for (i = 0; i < this.strings.length; i++) {
+      fretNum = this.getPosition(note, this.strings[i]);
+      yPos = fretboard.yPos() + (i * fretboard.stringDistance());
+      xPos = (fretboard.xPos() + (fretboard.fretDistance() / 2)) +
+        (fretNum * fretboard.fretDistance());
+      marker.beginFill(fretboard.black);
+      marker.drawRect(xPos, yPos, width, height);
+      marker.endFill();
+    }
+
+    marker.pivot.x = 7;
+    marker.pivot.y = 7;
+    container.addChild(marker);
+  },
+  highlight: function (e) {
+    // Highlights chords according to which key was pressed
+    var degrees, key, keyValue, visible, i, j, layer;
+    degrees = ['root',
+                 'second',
+                 'third',
+                 'fourth',
+                 'fifth',
+                 'sixth',
+                 'seventh'
+    ];
+    visible = [];
+    key = e.keyCode || e.charCode;
+    // check if the key pressed was between 0 and 7, otherwise return
+    if (key >= 48 && key <=55) {
+      keyValue = key - 48;
+    }
+    else {
+      return;
+    }
+
+    if (keyValue == 0) {
+      for (i = 0; i < degrees.length; i++) {
+        visible.push(degrees[i]);
+      }
+    }
+    else {
+      // push the first, third, and fifth degrees relative to keypress
+      var first, third, fifth;
+      keyValue -= 1;
+      first = keyValue;
+      third = (keyValue + 2) % degrees.length;
+      fifth = (keyValue + 4) % degrees.length;
+      visible.push(degrees[first], degrees[third], degrees[fifth]);
+    }
+
+    // now loop over degrees and set visible property as needed
+    // for some reason this function only works with "notes" instead
+    // of "this" (because of event handler scope?)
+    for (j = 0; j < degrees.length; j++) {
+      layer = degrees[j];
+      if (visible.indexOf(layer) > -1) {
+        notes.graphics[layer].visible = true;
+        notes.base[layer].visible = false;
+      }
+      else {
+        notes.graphics[layer].visible = false;
+        notes.base[layer].visible = true;
+      }
+    }
+    // render changes
+    renderer.render(stage);
+  },
   init: function () {
     "use strict";
     // Add all the containers to the main stage
@@ -277,37 +369,51 @@ var notes = {
         stage.addChild(obj);
       }
     }
+    for (var container in this.base) {
+      if (this.base.hasOwnProperty(container)) {
+        var obj = this.base[container];
+        obj.visible = false;
+        stage.addChild(obj);
+      }
+    }
   },
   update: function (root, tonality) {
     "use strict";
-    var scale, container, i;
+    var scale, container, baseContainer, i, degrees;
     scale = buildScale(root, tonality);
+    degrees = ['root',
+                'second',
+                'third',
+                'fourth',
+                'fifth',
+                'sixth',
+                'seventh'
+    ];
     this.wipe();
 
     for (i = 0; i < scale.length; i++) {
-      if (i === 0) {
-        container = this.graphics.root;
-      }
-      else if (i === 1) {
-        container = this.graphics.second;
-      }
-      else if (i === 2) {
-        container = this.graphics.third;
-      }
-      else if (i === 3) {
-        container = this.graphics.fourth;
-      }
-      else if (i === 4) {
-        container = this.graphics.fifth;
-      }
-      else if (i === 5) {
-        container = this.graphics.sixth;
-      }
-      else {
-        container = this.graphics.seventh;
-      }
+      container = this.graphics[degrees[i]];
+      baseContainer = this.base[degrees[i]];
 
       this.populate(container, scale[i], this.colors[i]);
+      this.baseLayer(baseContainer, scale[i]);
+    }
+
+    // make base markers all invisible each time we update
+    for (var container in this.base) {
+      if (this.base.hasOwnProperty(container)) {
+        var obj = this.base[container];
+        obj.visible = false;
+      }
+    }
+
+    // make main markers all visible each time we update
+    for (var container in this.graphics) {
+      if (this.graphics.hasOwnProperty(container)) {
+        var obj = this.graphics[container];
+        obj.visible = true;
+        stage.addChild(obj);
+      }
     }
   }
 };
@@ -318,6 +424,9 @@ notes.init();
 
 // Tell the `renderer` to `render` the `stage`
 renderer.render(stage);
+
+// Add event listener for chord highlighting
+window.addEventListener('keypress', notes.highlight, false);
 
 // Handles the click of the submit button
 var submitButton = document.getElementById('submit');

@@ -86,3 +86,10 @@ button, select {
   width: 100%;
   box-sizing: border-box;
 }
+p {
+  width: 60%;
+  margin-top: 1em;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
