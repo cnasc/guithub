@@ -1,1 +1,5 @@
+# vim swap files.
+.swp 
 
+#OS X silly metadata folder
+.DS_Store
