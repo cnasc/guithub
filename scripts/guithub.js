@@ -22,7 +22,7 @@ var renderer = PIXI.autoDetectRenderer(1000, 300,
   {antialiasing: true, transparent: false, resolution: 1}, true);
 
 // Change the background color to a lovely gray
-renderer.backgroundColor = 0xF9F9F9;
+renderer.backgroundColor = CONSTANTS.appBackgroundColor;
 
 // Add the canvas to the HTML document
 document.getElementById("canvas").appendChild(renderer.view);
@@ -30,24 +30,10 @@ document.getElementById("canvas").appendChild(renderer.view);
 // Create a container object called the `stage`
 var stage = new PIXI.Container();
 
-// the chromatic scale (all 12 notes in Western music)
-var chromatic = ['A', 'A#', 'B', 'C', 'C#', 'D',
-  'D#', 'E', 'F', 'F#', 'G', 'G#'];
 
-// Contains interval formulas to compute which notes are in a scale
-// Source: http://www.bandnotes.info/tidbits/scales/half-whl.htm
-// Sticking with diatonic scales for the time being.
-var scales = {
-  major:      [2, 2, 1, 2, 2, 2],
-  minor:      [2, 1, 2, 2, 1, 2],
-  dorian:     [2, 1, 2, 2, 2, 1],
-  mixolydian: [2, 2, 1, 2, 2, 1]
-};
 
 // Contains specifications for fretboard and functions that draw it
 var fretboard = {
-  fretboardColor: 0xffefdb,
-  black: 0x262626,
   // "12" frets, incluidng nut (so no 12th fret)
   numFrets: 12,
   numStrings: 6,
@@ -80,8 +66,8 @@ var fretboard = {
   drawBackground: function () {
     "use strict";
     // draw the board
-    this.board.lineStyle(2, this.black, 1);
-    this.board.beginFill(this.fretboardColor);
+    this.board.lineStyle(2, CONSTANTS.fretboardColors.frets, 1);
+    this.board.beginFill(CONSTANTS.fretboardColors.fretboard);
     this.board.drawRect(this.xPos(), this.yPos(),
       this.width, this.height);
     this.board.endFill();
@@ -90,7 +76,7 @@ var fretboard = {
   drawNut: function() {
     "use strict";
     // draw the nut
-    this.board.lineStyle(2, this.black, 1);
+    this.board.lineStyle(2, CONSTANTS.fretboardColors.frets, 1);
     this.board.beginFill(0xFFFFFF);
     this.board.drawRect(this.xPos(), this.yPos(),
       this.fretDistance(), this.height);
@@ -107,10 +93,10 @@ var fretboard = {
     for (i = 0; i < this.numFrets - 1; i++) {
       if (i < 1) {
         // draw a thick line for the first "fret" to indicate nut
-        this.board.lineStyle(10, this.black, 1);
+        this.board.lineStyle(10, CONSTANTS.fretboardColors.frets, 1);
       }
       else {
-        this.board.lineStyle(2, this.black, 1);
+        this.board.lineStyle(2, CONSTANTS.fretboardColors.frets, 1);
       }
 
       this.board.moveTo(lineX, this.yPos());
@@ -128,7 +114,7 @@ var fretboard = {
     lineY = this.yPos() + this.stringDistance();
 
     for (i = 0; i < this.numStrings - 2; i++) {
-      this.board.lineStyle(1, this.black, 1);
+      this.board.lineStyle(1, CONSTANTS.fretboardColors.strings, 1);
 
       this.board.moveTo(this.xPos(), lineY);
       this.board.lineTo(this.xPos() + this.width, lineY);
@@ -148,7 +134,7 @@ var fretboard = {
 
     for (i = 0; i < locations.length; i++) {
       marker = new PIXI.Text(locations[i],
-        {font: "20px Georgia", fill: this.black});
+        {font: CONSTANTS.fretLabelFont, fill: CONSTANTS.fretNumberLabelColor});
 
       xPos = (this.xPos() + (this.fretDistance() / 2)) +
         (this.fretDistance() * locations[i]);
@@ -176,39 +162,22 @@ var fretboard = {
 function buildScale(root, type) {
   "use strict";
   var scale, formula, note;
-
-  switch (type) {
-    case "major":
-      formula = scales.major;
-      break;
-    case "minor":
-      formula = scales.minor;
-      break;
-    case "dorian":
-      formula = scales.dorian;
-      break;
-    case "mixolydian":
-      formula = scales.mixolydian;
-      break;
-    default:
-      // This should only happen if the user tampers with the HTML
-      return null;
-  }
+  formula = CONSTANTS.scales[type];
 
   scale = [];
 
   // Checking for error, should only happen if HTML is tampered with
-  note = chromatic.indexOf(root);
+  note = CONSTANTS.chromaticNotes.indexOf(root);
   if (note < 0) {
     return null;
   }
   else {
-    scale.push(chromatic[note]);
+    scale.push(CONSTANTS.chromaticNotes[note]);
   }
 
   for (var i = 0; i < formula.length; i++) {
-    note = (note + formula[i]) % chromatic.length;
-    scale.push(chromatic[note]);
+    note = (note + formula[i]) % CONSTANTS.chromaticNotes.length;
+    scale.push(CONSTANTS.chromaticNotes[note]);
   }
 
   return scale;
@@ -216,15 +185,6 @@ function buildScale(root, type) {
 
 // Contains logic regarding the drawing of notes
 var notes = {
-  // ROYGBIV colors for notes
-  colors: [0xFF0000,
-            0xFF7F00,
-            0xFFFF00,
-            0x00FF00,
-            0x0000FF,
-            0x4B0082,
-            0x8B00FF
-  ],
   graphics: {
     root: new PIXI.Container(),
     second: new PIXI.Container(),
@@ -265,11 +225,11 @@ var notes = {
     // find location for given note on given string
     var stringVal, noteVal, fretNum;
 
-    stringVal = chromatic.indexOf(string);
-    noteVal = chromatic.indexOf(note);
+    stringVal = CONSTANTS.chromaticNotes.indexOf(string);
+    noteVal = CONSTANTS.chromaticNotes.indexOf(note);
 
     if (noteVal < stringVal) {
-      fretNum = noteVal + chromatic.length - stringVal;
+      fretNum = noteVal + CONSTANTS.chromaticNotes.length - stringVal;
     }
     else {
       fretNum = noteVal - stringVal;
@@ -277,24 +237,32 @@ var notes = {
 
     return fretNum;
   },
-  populate: function (container, note, color) {
+  populate: function (container, note, color, isRoot, isChordTone) {
     "use strict";
     // draw all instances of a given note into a given container
-    var fretNum, i, text, xPos, yPos;
+    var fretNum, i, text, xPos, yPos, labelColor, useFont;
     for (i = 0; i < this.strings.length; i++) {
       fretNum = this.getPosition(note, this.strings[i]);
       yPos = fretboard.yPos() + (i * fretboard.stringDistance());
       xPos = (fretboard.xPos() + (fretboard.fretDistance() / 2)) +
         (fretNum * fretboard.fretDistance());
-
-      text = new PIXI.Text(note, {font: "36px Georgia",
-                                      fill: color,
-                                      stroke: fretboard.black,
-                                      strokeThickness: 6
+      labelColor = isRoot ? CONSTANTS.rootNoteLabelColor : CONSTANTS.noteLabelColor;
+      // TODO: get fancier and add the accent as a 2nd text thing of a different size
+      useFont = note.length > 1 ? CONSTANTS.accentNoteLabelFont : CONSTANTS.noteLabelFont;
+      text = new PIXI.Text(note, {font: useFont,
+                                      fill: labelColor,
+                                      stroke: labelColor,
+                                      strokeThickness: 0
       });
       text.anchor.x = 0.5;
       text.anchor.y = 0.5;
       text.position.set(xPos, yPos);
+      ///
+      var g = new PIXI.Graphics()
+        g.beginFill(color, 1)
+        g.drawCircle(xPos,yPos,19)
+        container.addChild(g)
+      ////
       container.addChild(text);
     }
   },
@@ -323,15 +291,7 @@ var notes = {
   },
   highlight: function (e) {
     // Highlights chords according to which key was pressed
-    var degrees, key, keyValue, visible, i, j, layer;
-    degrees = ['root',
-                 'second',
-                 'third',
-                 'fourth',
-                 'fifth',
-                 'sixth',
-                 'seventh'
-    ];
+    var key, keyValue, visible, i, j, layer;
     visible = [];
     key = e.keyCode || e.charCode;
     // check if the key pressed was between 0 and 7, otherwise return
@@ -343,8 +303,8 @@ var notes = {
     }
 
     if (keyValue == 0) {
-      for (i = 0; i < degrees.length; i++) {
-        visible.push(degrees[i]);
+      for (i = 0; i < CONSTANTS.scaleDegrees.length; i++) {
+        visible.push(CONSTANTS.scaleDegrees[i]);
       }
     }
     else {
@@ -352,16 +312,16 @@ var notes = {
       var first, third, fifth;
       keyValue -= 1;
       first = keyValue;
-      third = (keyValue + 2) % degrees.length;
-      fifth = (keyValue + 4) % degrees.length;
-      visible.push(degrees[first], degrees[third], degrees[fifth]);
+      third = (keyValue + 2) % CONSTANTS.scaleDegrees.length;
+      fifth = (keyValue + 4) % CONSTANTS.scaleDegrees.length;
+      visible.push(CONSTANTS.scaleDegrees[first], CONSTANTS.scaleDegrees[third], CONSTANTS.scaleDegrees[fifth]);
     }
 
     // now loop over degrees and set visible property as needed
     // for some reason this function only works with "notes" instead
     // of "this" (because of event handler scope?)
-    for (j = 0; j < degrees.length; j++) {
-      layer = degrees[j];
+    for (j = 0; j < CONSTANTS.scaleDegrees.length; j++) {
+      layer = CONSTANTS.scaleDegrees[j];
       if (visible.indexOf(layer) > -1) {
         notes.graphics[layer].visible = true;
         notes.base[layer].visible = false;
@@ -393,23 +353,15 @@ var notes = {
   },
   update: function (root, tonality) {
     "use strict";
-    var scale, container, baseContainer, i, degrees;
+    var scale, container, baseContainer, i;
     scale = buildScale(root, tonality);
-    degrees = ['root',
-                'second',
-                'third',
-                'fourth',
-                'fifth',
-                'sixth',
-                'seventh'
-    ];
     this.wipe();
 
     for (i = 0; i < scale.length; i++) {
-      container = this.graphics[degrees[i]];
-      baseContainer = this.base[degrees[i]];
+      container = this.graphics[CONSTANTS.scaleDegrees[i]];
+      baseContainer = this.base[CONSTANTS.scaleDegrees[i]];
 
-      this.populate(container, scale[i], this.colors[i]);
+      this.populate(container, scale[i], CONSTANTS.noteColors[i], i===0);
       this.baseLayer(baseContainer, scale[i]);
     }
 
