@@ -39,6 +39,7 @@ var fretboard = {
   numStrings: 6,
   width: Math.floor(renderer.width * 0.9),
   height: Math.floor(renderer.height * 0.7),
+  hand: 'right',
   board: new PIXI.Graphics(),
 
   fretDistance: function () {
@@ -75,20 +76,35 @@ var fretboard = {
 
   drawNut: function() {
     "use strict";
+    var xPos;
+
+    if (this.hand === 'left') {
+      xPos = this.xPos() + this.width - this.fretDistance();
+    }
+    else {
+      xPos = this.xPos();
+    }
     // draw the nut
     this.board.lineStyle(2, CONSTANTS.fretboardColors.frets, 1);
     this.board.beginFill(0xFFFFFF);
-    this.board.drawRect(this.xPos(), this.yPos(),
+    this.board.drawRect(xPos, this.yPos(),
       this.fretDistance(), this.height);
     this.board.endFill();
   },
 
   drawFrets: function () {
     "use strict";
-    var lineX, i;
+    var lineX, i, fretDistance;
 
     // determine position for first fret
-    lineX = this.xPos() + this.fretDistance();
+    if (this.hand === 'left') {
+      lineX = this.xPos() + this.width - this.fretDistance();
+      fretDistance = this.fretDistance() * -1;
+    }
+    else {
+      lineX = this.xPos() + this.fretDistance();
+      fretDistance = this.fretDistance();
+    }
 
     for (i = 0; i < this.numFrets - 1; i++) {
       if (i < 1) {
@@ -102,7 +118,7 @@ var fretboard = {
       this.board.moveTo(lineX, this.yPos());
       this.board.lineTo(lineX, this.yPos() + this.height);
 
-      lineX += this.fretDistance();
+      lineX += fretDistance;
     }
   },
 
@@ -149,12 +165,14 @@ var fretboard = {
 
   init: function () {
     "use strict";
+    this.hand = getRadioValue('hand');
     this.drawBackground();
     this.drawNut();
     this.drawFrets();
     this.drawStrings();
     this.drawMarkers();
     stage.addChild(this.board);
+    //this.board.pivot = (this.width / 2, this.height / 2);
   }
 };
 
