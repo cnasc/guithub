@@ -220,6 +220,7 @@ var notes = {
     seventh: new PIXI.Container()
   },
   strings: ['E', 'B', 'G', 'D', 'A', 'E'],
+  hand: 'left',
   wipe: function () {
     "use strict";
     // clear the contents of all container objects
@@ -260,8 +261,15 @@ var notes = {
     for (i = 0; i < this.strings.length; i++) {
       fretNum = this.getPosition(note, this.strings[i]);
       yPos = fretboard.yPos() + (i * fretboard.stringDistance());
-      xPos = (fretboard.xPos() + (fretboard.fretDistance() / 2)) +
-        (fretNum * fretboard.fretDistance());
+      if (this.hand === 'left') {
+        xPos = (fretboard.xPos() + fretboard.width - (fretboard.fretDistance() / 2)) -
+          (fretNum * fretboard.fretDistance());
+      }
+      else {
+        xPos = (fretboard.xPos() + (fretboard.fretDistance() / 2)) +
+          (fretNum * fretboard.fretDistance());
+      }
+
       labelColor = isRoot ? CONSTANTS.rootNoteLabelColor : CONSTANTS.noteLabelColor;
       // TODO: get fancier and add the accent as a 2nd text thing of a different size
       useFont = note.length > 1 ? CONSTANTS.accentNoteLabelFont : CONSTANTS.noteLabelFont;
@@ -372,6 +380,8 @@ var notes = {
     var scale, container, baseContainer, i;
     scale = buildScale(root, tonality);
     this.wipe();
+
+    this.hand = getRadioValue('hand');
 
     for (i = 0; i < scale.length; i++) {
       container = this.graphics[CONSTANTS.scaleDegrees[i]];
