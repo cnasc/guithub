@@ -163,8 +163,15 @@ var fretboard = {
 
   },
 
+  wipe: function () {
+    "use strict";
+    // clear the contents of the fretboard object
+    this.board.removeChildren();
+  },
+
   init: function () {
     "use strict";
+    this.wipe();
     this.hand = getRadioValue('hand');
     this.drawBackground();
     this.drawNut();
