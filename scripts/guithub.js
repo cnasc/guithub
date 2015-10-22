@@ -401,6 +401,9 @@ var notes = {
 
     this.hand = getRadioValue('hand');
 
+    // init fretboard again so it can respond to handedness
+    fretboard.init();
+
     for (i = 0; i < scale.length; i++) {
       container = this.graphics[CONSTANTS.scaleDegrees[i]];
       baseContainer = this.base[CONSTANTS.scaleDegrees[i]];
