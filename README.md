@@ -11,15 +11,15 @@ Yes! head to cnasc.github.io to give it a try.
 
 ### TODO
 - [ ] Left-hand display option
-- [x] Fix output
-  - [x] Encapsulate each note in a text object
-  - [x] Clear all note graphics on submit
 - [ ] Better clarity
   - [ ] Colorblind friendly display options
   - [ ] Improve text rendering
   - [ ] Better support for high PPI displays
   - [x] Thicker line to differentiate the nut
   - [x] Note names as markers
+- [x] Fix output
+  - [x] Encapsulate each note in a text object
+  - [x] Clear all note graphics on submit
 - [x] Position markers for easy glances
 - [x] Chord tone highlighting
   - [x] Base layer of markers to show where notes outside chord are
