@@ -34,12 +34,14 @@ var stage = new PIXI.Container();
 
 // Contains specifications for fretboard and functions that draw it
 var fretboard = {
-  // "12" frets, incluidng nut (so no 12th fret)
+  // "12" frets, including nut (so no 12th fret)
   numFrets: 12,
   numStrings: 6,
   width: Math.floor(renderer.width * 0.9),
   height: Math.floor(renderer.height * 0.7),
+  hand: 'right',
   board: new PIXI.Graphics(),
+  numbers: new PIXI.Container(),
 
   fretDistance: function () {
     "use strict";
@@ -75,20 +77,35 @@ var fretboard = {
 
   drawNut: function() {
     "use strict";
+    var xPos;
+
+    if (this.hand === 'left') {
+      xPos = this.xPos() + this.width - this.fretDistance();
+    }
+    else {
+      xPos = this.xPos();
+    }
     // draw the nut
     this.board.lineStyle(2, CONSTANTS.fretboardColors.frets, 1);
     this.board.beginFill(0xFFFFFF);
-    this.board.drawRect(this.xPos(), this.yPos(),
+    this.board.drawRect(xPos, this.yPos(),
       this.fretDistance(), this.height);
     this.board.endFill();
   },
 
   drawFrets: function () {
     "use strict";
-    var lineX, i;
+    var lineX, i, fretDistance;
 
     // determine position for first fret
-    lineX = this.xPos() + this.fretDistance();
+    if (this.hand === 'left') {
+      lineX = this.xPos() + this.width - this.fretDistance();
+      fretDistance = this.fretDistance() * -1;
+    }
+    else {
+      lineX = this.xPos() + this.fretDistance();
+      fretDistance = this.fretDistance();
+    }
 
     for (i = 0; i < this.numFrets - 1; i++) {
       if (i < 1) {
@@ -102,7 +119,7 @@ var fretboard = {
       this.board.moveTo(lineX, this.yPos());
       this.board.lineTo(lineX, this.yPos() + this.height);
 
-      lineX += this.fretDistance();
+      lineX += fretDistance;
     }
   },
 
@@ -135,26 +152,52 @@ var fretboard = {
     for (i = 0; i < locations.length; i++) {
       marker = new PIXI.Text(locations[i],
         {font: CONSTANTS.fretLabelFont, fill: CONSTANTS.fretNumberLabelColor});
-
-      xPos = (this.xPos() + (this.fretDistance() / 2)) +
-        (this.fretDistance() * locations[i]);
+      if (this.hand === 'left') {
+        xPos = (this.xPos() + this.width - (this.fretDistance() / 2)) +
+          (this.fretDistance() * (locations[i] * -1));
+      }
+      else {
+        xPos = (this.xPos() + (this.fretDistance() / 2)) +
+          (this.fretDistance() * locations[i]);
+      }
 
       marker.anchor.x = 0.5;
       marker.anchor.y = 0.5;
       marker.position.set(xPos, yPos);
-      stage.addChild(marker);
+      this.numbers.addChild(marker);
     }
 
   },
 
+  wipe: function () {
+    "use strict";
+    // clear the contents of the fretboard object
+    this.board.removeChildren();
+    // clear the position markers
+    this.numbers.removeChildren();
+  },
+
   init: function () {
     "use strict";
+    this.hand = getRadioValue('hand');
     this.drawBackground();
     this.drawNut();
     this.drawFrets();
     this.drawStrings();
     this.drawMarkers();
     stage.addChild(this.board);
+    stage.addChild(this.numbers);
+  },
+
+  update: function () {
+    "use strict";
+    this.wipe();
+    this.hand = getRadioValue('hand');
+    this.drawBackground();
+    this.drawNut();
+    this.drawFrets();
+    this.drawStrings();
+    this.drawMarkers();
   }
 };
 
@@ -183,6 +226,22 @@ function buildScale(root, type) {
   return scale;
 }
 
+// returns the value of the checked radio button, or fallback if error
+function getRadioValue(name, fallback) {
+  var radios, value, i;
+
+  radios = document.getElementsByName(name);
+  value = fallback;
+
+  for (i = 0; i < radios.length; i++) {
+    if (radios[i].checked) {
+      value = radios[i].value;
+      break;
+    }
+  }
+  return value;
+}
+
 // Contains logic regarding the drawing of notes
 var notes = {
   graphics: {
@@ -204,6 +263,7 @@ var notes = {
     seventh: new PIXI.Container()
   },
   strings: ['E', 'B', 'G', 'D', 'A', 'E'],
+  hand: 'left',
   wipe: function () {
     "use strict";
     // clear the contents of all container objects
@@ -244,8 +304,15 @@ var notes = {
     for (i = 0; i < this.strings.length; i++) {
       fretNum = this.getPosition(note, this.strings[i]);
       yPos = fretboard.yPos() + (i * fretboard.stringDistance());
-      xPos = (fretboard.xPos() + (fretboard.fretDistance() / 2)) +
-        (fretNum * fretboard.fretDistance());
+      if (this.hand === 'left') {
+        xPos = (fretboard.xPos() + fretboard.width - (fretboard.fretDistance() / 2)) -
+          (fretNum * fretboard.fretDistance());
+      }
+      else {
+        xPos = (fretboard.xPos() + (fretboard.fretDistance() / 2)) +
+          (fretNum * fretboard.fretDistance());
+      }
+
       labelColor = isRoot ? CONSTANTS.rootNoteLabelColor : CONSTANTS.noteLabelColor;
       // TODO: get fancier and add the accent as a 2nd text thing of a different size
       useFont = note.length > 1 ? CONSTANTS.accentNoteLabelFont : CONSTANTS.noteLabelFont;
@@ -278,8 +345,14 @@ var notes = {
     for (i = 0; i < this.strings.length; i++) {
       fretNum = this.getPosition(note, this.strings[i]);
       yPos = fretboard.yPos() + (i * fretboard.stringDistance());
-      xPos = (fretboard.xPos() + (fretboard.fretDistance() / 2)) +
-        (fretNum * fretboard.fretDistance());
+      if (this.hand === 'left') {
+        xPos = (fretboard.xPos() + fretboard.width - (fretboard.fretDistance() / 2)) -
+          (fretNum * fretboard.fretDistance());
+      }
+      else {
+        xPos = (fretboard.xPos() + (fretboard.fretDistance() / 2)) +
+          (fretNum * fretboard.fretDistance());
+      }
       marker.beginFill(fretboard.black);
       marker.drawRect(xPos, yPos, width, height);
       marker.endFill();
@@ -354,8 +427,14 @@ var notes = {
   update: function (root, tonality) {
     "use strict";
     var scale, container, baseContainer, i;
+
+    // update fretboard so it can respond to handedness
+    fretboard.update();
+
     scale = buildScale(root, tonality);
     this.wipe();
+
+    this.hand = getRadioValue('hand');
 
     for (i = 0; i < scale.length; i++) {
       container = this.graphics[CONSTANTS.scaleDegrees[i]];

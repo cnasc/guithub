@@ -26,7 +26,7 @@
       <div class="form">
         <form id="options">
           <fieldset>
-            <label for="root">Root Note</label>
+            <label for="root"><b>Root Note</b></label>
             <br>
             <select id="root">
               <option value="A">A</option>
@@ -43,7 +43,7 @@
               <option value="G#">G#</option>
             </select>
             <br>
-            <label for="tonality">Tonality</label>
+            <label for="tonality"><b>Tonality</b></label>
             <br>
             <select id="tonality">
               <option value="major">Major</option>
@@ -51,6 +51,11 @@
               <option value="dorian">Dorian</option>
               <option value="mixolydian">Mixolydian</option>
             </select>
+            <br>
+            <label for="hand"><b>Handedness</b></label>
+            <br>
+            <input type="radio" name="hand" value="right" checked="checked">Right
+            <input type="radio" name="hand" value="left">Left
             <br>
             <button type="button" id="submit">Submit</button>
           </fieldset>
