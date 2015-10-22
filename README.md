@@ -10,6 +10,7 @@ It uses the colors of the rainbow (ROYGBIV) to indicate scale tones, so if you k
 Yes! head to cnasc.github.io to give it a try.
 
 ### TODO
+- [ ] Left-hand display option
 - [x] Fix output
   - [x] Encapsulate each note in a text object
   - [x] Clear all note graphics on submit
