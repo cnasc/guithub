@@ -34,7 +34,7 @@ var stage = new PIXI.Container();
 
 // Contains specifications for fretboard and functions that draw it
 var fretboard = {
-  // "12" frets, incluidng nut (so no 12th fret)
+  // "12" frets, including nut (so no 12th fret)
   numFrets: 12,
   numStrings: 6,
   width: Math.floor(renderer.width * 0.9),
