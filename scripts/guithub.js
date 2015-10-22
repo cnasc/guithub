@@ -345,8 +345,14 @@ var notes = {
     for (i = 0; i < this.strings.length; i++) {
       fretNum = this.getPosition(note, this.strings[i]);
       yPos = fretboard.yPos() + (i * fretboard.stringDistance());
-      xPos = (fretboard.xPos() + (fretboard.fretDistance() / 2)) +
-        (fretNum * fretboard.fretDistance());
+      if (this.hand === 'left') {
+        xPos = (fretboard.xPos() + fretboard.width - (fretboard.fretDistance() / 2)) -
+          (fretNum * fretboard.fretDistance());
+      }
+      else {
+        xPos = (fretboard.xPos() + (fretboard.fretDistance() / 2)) +
+          (fretNum * fretboard.fretDistance());
+      }
       marker.beginFill(fretboard.black);
       marker.drawRect(xPos, yPos, width, height);
       marker.endFill();
