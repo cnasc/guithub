@@ -183,6 +183,22 @@ function buildScale(root, type) {
   return scale;
 }
 
+// returns the value of the checked radio button, or fallback if error
+function getRadioValue(name, fallback) {
+  var radios, value, i;
+
+  radios = document.getElementsByName(name);
+  value = fallback;
+
+  for (i = 0; i < radios.length; i++) {
+    if (radios[i].checked) {
+      value = radios[i].value;
+      break;
+    }
+  }
+  return value;
+}
+
 // Contains logic regarding the drawing of notes
 var notes = {
   graphics: {
