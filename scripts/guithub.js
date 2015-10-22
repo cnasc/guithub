@@ -41,6 +41,7 @@ var fretboard = {
   height: Math.floor(renderer.height * 0.7),
   hand: 'right',
   board: new PIXI.Graphics(),
+  numbers: new PIXI.Container(),
 
   fretDistance: function () {
     "use strict";
@@ -151,14 +152,19 @@ var fretboard = {
     for (i = 0; i < locations.length; i++) {
       marker = new PIXI.Text(locations[i],
         {font: CONSTANTS.fretLabelFont, fill: CONSTANTS.fretNumberLabelColor});
-
-      xPos = (this.xPos() + (this.fretDistance() / 2)) +
-        (this.fretDistance() * locations[i]);
+      if (this.hand === 'left') {
+        xPos = (this.xPos() + this.width - (this.fretDistance() / 2)) +
+          (this.fretDistance() * (locations[i] * -1));
+      }
+      else {
+        xPos = (this.xPos() + (this.fretDistance() / 2)) +
+          (this.fretDistance() * locations[i]);
+      }
 
       marker.anchor.x = 0.5;
       marker.anchor.y = 0.5;
       marker.position.set(xPos, yPos);
-      stage.addChild(marker);
+      this.numbers.addChild(marker);
     }
 
   },
@@ -167,6 +173,8 @@ var fretboard = {
     "use strict";
     // clear the contents of the fretboard object
     this.board.removeChildren();
+    // clear the position markers
+    this.numbers.removeChildren();
   },
 
   init: function () {
@@ -179,6 +187,7 @@ var fretboard = {
     this.drawStrings();
     this.drawMarkers();
     stage.addChild(this.board);
+    stage.addChild(this.numbers);
     //this.board.pivot = (this.width / 2, this.height / 2);
   }
 };
