@@ -179,7 +179,6 @@ var fretboard = {
 
   init: function () {
     "use strict";
-    this.wipe();
     this.hand = getRadioValue('hand');
     this.drawBackground();
     this.drawNut();
@@ -188,7 +187,17 @@ var fretboard = {
     this.drawMarkers();
     stage.addChild(this.board);
     stage.addChild(this.numbers);
-    //this.board.pivot = (this.width / 2, this.height / 2);
+  },
+
+  update: function () {
+    "use strict";
+    this.wipe();
+    this.hand = getRadioValue('hand');
+    this.drawBackground();
+    this.drawNut();
+    this.drawFrets();
+    this.drawStrings();
+    this.drawMarkers();
   }
 };
 
@@ -412,13 +421,14 @@ var notes = {
   update: function (root, tonality) {
     "use strict";
     var scale, container, baseContainer, i;
+
+    // update fretboard so it can respond to handedness
+    fretboard.update();
+
     scale = buildScale(root, tonality);
     this.wipe();
 
     this.hand = getRadioValue('hand');
-
-    // init fretboard again so it can respond to handedness
-    fretboard.init();
 
     for (i = 0; i < scale.length; i++) {
       container = this.graphics[CONSTANTS.scaleDegrees[i]];
